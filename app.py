@@ -112,11 +112,11 @@ def result():
 
 @app.route("/search")
 def search():
-    query = request.args["query"]
-    sql = "SELECT * FROM books WHERE name LIKE :query OR status LIKE :query OR grade LIKE :query OR review LIKE :query"
-    result = db.session.execute(sql, {"query": "%"+query+"%"})
-    books = result.fetchall()
-    return render_template("search.html", books=books)
+    # query = request.args["query"]
+    # sql = "SELECT * FROM books WHERE name LIKE :query OR status LIKE :query OR grade LIKE :query OR review LIKE :query"
+    # result = db.session.execute(sql, {"query": "%"+query+"%"})
+    # books = result.fetchall()
+    return render_template("search.html")
 
 
 @app.route("/mybooks")
