@@ -3,8 +3,12 @@ CREATE TABLE users (
     username TEXT UNIQUE,
     password TEXT
 );
+
 CREATE TABLE books (
     id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id),
     name TEXT,
-    genre TEXT
+    status TEXT,
+    grade INTEGER,
+    review TEXT
 );
