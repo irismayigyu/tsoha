@@ -12,6 +12,7 @@ app.secret_key = getenv("SECRET_KEY")
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql+psycopg2://"
 db = SQLAlchemy(app)
 
+
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -35,16 +36,17 @@ def login():
     else:
         return "Incorrect password. <a href='/'>Try again</a>"
 
+
 @app.route("/logout")
 def logout():
     del session["username"]
     return redirect("/")
 
+
 @app.route("/register", methods=["POST", "GET"])
 def register():
     if request.method == "GET":
         return render_template("register.html")
-
 
     if request.method == "POST":
         username = request.form["username"]
@@ -56,8 +58,10 @@ def register():
             return "Username already exists. <a href='/register'>Try again</a>"
         hash_value = generate_password_hash(password)
         try:
-            query = text("INSERT INTO users (username, password) VALUES (:username, :password)")
-            db.session.execute(query, {"username": username, "password": hash_value})
+            query = text(
+                "INSERT INTO users (username, password) VALUES (:username, :password)")
+            db.session.execute(
+                query, {"username": username, "password": hash_value})
             db.session.commit()
         except Exception as e:
             print(e)
@@ -69,6 +73,7 @@ def register():
 @app.route("/startpage")
 def startpage():
     return render_template("startpage.html")
+
 
 @app.route("/form")
 def form():
@@ -92,8 +97,10 @@ def result():
         return "User not found."
 
     try:
-        query = text("INSERT INTO books (user_id, name, status, grade, review) VALUES (:user_id, :name, :status, :grade, :review)")
-        db.session.execute(query, {"user_id": user.id, "name": name, "status": status, "grade": grade, "review": review})
+        query = text(
+            "INSERT INTO books (user_id, name, status, grade, review) VALUES (:user_id, :name, :status, :grade, :review)")
+        db.session.execute(query, {"user_id": user.id, "name": name,
+                           "status": status, "grade": grade, "review": review})
         db.session.commit()
 
         return render_template("result.html", name=name, status=status, grade=grade, review=review)
@@ -102,11 +109,12 @@ def result():
         print(e)
         return "Insertion failed. <a href='/form'>Try again</a>"
 
+
 @app.route("/search")
 def search():
     query = request.args["query"]
     sql = "SELECT * FROM books WHERE name LIKE :query OR status LIKE :query OR grade LIKE :query OR review LIKE :query"
-    result = db.session.execute(sql, {"query":"%"+query+"%"})
+    result = db.session.execute(sql, {"query": "%"+query+"%"})
     books = result.fetchall()
     return render_template("search.html", books=books)
 
@@ -119,6 +127,7 @@ def mybooks():
         return render_template("mybooks.html", error_message=user_books)
 
     return render_template("mybooks.html", user_books=user_books)
+
 
 def get_user_books():
     if 'username' not in session:
@@ -141,6 +150,3 @@ def get_user_books():
         return "No books found."
 
     return user_books
-
-
-

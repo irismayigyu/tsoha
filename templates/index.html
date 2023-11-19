@@ -1,21 +1,21 @@
-
 {% if session.username %}
 <p>Hello {{ session.username }}, You have registered</p>
 <a href="/startpage">Continue to mainpage</a>
 <p>
-<a href="/logout">Log out</a>
-{% else %}
-Welcome to Mybooks! Mybooks is a page where you can list and review all the books you have read.
+    <a href="/logout">Log out</a>
+    {% else %}
+    Welcome to Mybooks! Mybooks is a page where you can list and review all the books you have read.
 <p>
-Login
+    Login
 <p>
 <form action="/login" method="POST">
-<p>Username:<br>
-<input type="text" name="username" required ></p>
-<p>Password:<br>
-<input type="password" name="password" required ></p>
-<input type="submit" value="Login">
+    <p>Username:<br>
+        <input type="text" name="username" required>
+    </p>
+    <p>Password:<br>
+        <input type="password" name="password" required>
+    </p>
+    <input type="submit" value="Login">
 </form>
 <a href="/register">Make a user</a>
 {% endif %}
-
