@@ -15,7 +15,7 @@ Sovellukseen lisätään itse lukemia kirjoja ja arvioidaan ne. Jokainen käytt�
 - Käyttäjä voi antaa arvion 1-10 asteelta, valita statuksen ja kirjoittaa arvioinnin kirjasta. 
 - Käyttäjän "omista kirjoista" löytyy hänen tallentamansa kirjat.
 
-#Käynnistysohjeet
+# Käynnistysohjeet
 
 HUOM Ohjeet kurssin materiaaleista
 
