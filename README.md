@@ -1,3 +1,6 @@
+20.11. muokattu niin että sovelluksen testaamisen pitäisi nyt onnistua.
+HUOM käytetty chatgpteetä. 
+
 # Kirjalistasovellus
 
 Sovellukseen lisätään itse lukemia kirjoja ja arvioidaan ne. Jokainen käyttäjä on ylläpitäjä tai peruskäyttäjä.
