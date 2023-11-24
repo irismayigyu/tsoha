@@ -98,7 +98,7 @@ def result():
 
     try:
         query = text(
-            "INSERT INTO books (user_id, name, status, grade, review) VALUES (:user_id, :name, :status, :grade, :review)")
+            "INSERT INTO reviews (user_id, name, status, grade, review) VALUES (:user_id, :name, :status, :grade, :review)")
         db.session.execute(query, {"user_id": user.id, "name": name,
                            "status": status, "grade": grade, "review": review})
         db.session.commit()
@@ -112,24 +112,20 @@ def result():
 
 @app.route("/search")
 def search():
-    # query = request.args["query"]
-    # sql = "SELECT * FROM books WHERE name LIKE :query OR status LIKE :query OR grade LIKE :query OR review LIKE :query"
-    # result = db.session.execute(sql, {"query": "%"+query+"%"})
-    # books = result.fetchall()
     return render_template("search.html")
 
 
-@app.route("/mybooks")
-def mybooks():
-    user_books = get_user_books()
+@app.route("/myreviews")
+def myreviews():
+    user_reviews = get_user_reviews()
 
-    if isinstance(user_books, str):
-        return render_template("mybooks.html", error_message=user_books)
+    if isinstance(user_reviews, str):
+        return render_template("myreviews.html", error_message=user_reviews)
 
-    return render_template("mybooks.html", user_books=user_books)
+    return render_template("myreviews.html", user_reviews=user_reviews)
 
 
-def get_user_books():
+def get_user_reviews():
     if 'username' not in session:
         return "User not logged in."
 
@@ -142,11 +138,11 @@ def get_user_books():
     if not user:
         return "User not found."
 
-    query_books = text("SELECT * FROM books WHERE user_id = :user_id")
-    result_books = db.session.execute(query_books, {"user_id": user.id})
-    user_books = result_books.fetchall()
+    query_reviews = text("SELECT * FROM reviews WHERE user_id = :user_id")
+    result_reviews = db.session.execute(query_reviews, {"user_id": user.id})
+    user_reviews = result_reviews.fetchall()
 
-    if not user_books:
-        return "No books found."
+    if not user_reviews:
+        return "No reviews found."
 
-    return user_books
+    return user_reviews

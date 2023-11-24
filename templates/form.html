@@ -1,6 +1,6 @@
 <form action="/result" method="POST">
     <p>Book name:<br>
-        <input type="text" name="name" required>
+        <input type="text" name="name" maxlength="50" required>
     </p>
 
     Progress:
@@ -26,7 +26,7 @@
     </p>
 
     Write a review: <br>
-    <textarea name="review" rows="10" cols="50" required></textarea>
+    <textarea name="review" rows="10" cols="50" maxlength="5000" required></textarea>
 
     <p>
         <input type="submit" value="Save">

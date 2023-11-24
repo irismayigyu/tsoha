@@ -7,10 +7,9 @@ Sovellukseen lisätään itse lukemia kirjoja ja arvioidaan ne. Jokainen käytt�
 
 - Käyttäjä voi kirjautua sisään ja ulos sekä luoda uuden tunnuksen.
 - Käyttäjä voi antaa arvion 1-10 asteelta, valita statuksen ja kirjoittaa arvioinnin kirjasta.
-- Käyttäjän "omista kirjoista" löytyy hänen tallentamansa kirjat.
-- Kirjan tiedoista löytyy kirjan keskiarvoarvosana ja sille annetut sanalliset arvioinnit.
-- Ylläpitäjä voi poistaa lisätä ja poistaa kirjoja.
-- Ylläpitäjä voi poistaa käyttäjän tekemiä arvioita.
+- Käyttäjän "omista arvioinneista" löytyy hänen tallentamansa kirjat.
+- Käyttäjät voivat lisätä kavereita ja kaverukset voivat nähdä toistensa arvioimat kirjat.
+- Käyttäjä voi etsiä kirjaa tietokannasta, jos ei löydä sitä kirjaa, hän voi itse lisätä sen tietokantaan. 
 
 
 # Nykyinen toiminnallisuus

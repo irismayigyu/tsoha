@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Reviews</title>
+</head>
+
+<body>
+    <h1>My Reviews</h1>
+
+    {% if user_reviews %}
+    <ul>
+        {% for re in user_reviews %}
+        <li>
+            <strong>Name:</strong> {{ re.name }}<br>
+            <strong>Status:</strong> {{ re.status }}<br>
+            <strong>Grade:</strong> {{ re.grade }}<br>
+            <strong>Review:</strong> {{ re.review }}<br>
+            <hr>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>{{ error_message }}</p>
+    {% endif %}
+
+    <a href="/startpage">Back to startpage</a>
+</body>
+
+</html>

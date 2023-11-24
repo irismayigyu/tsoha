@@ -1,11 +1,11 @@
 Register
 <p>
 <form action="/register" method="POST">
-    <p>Username:<br>
-        <input type="text" name="username" required>
+    <p>Username (Maximum of 20 characters):<br>
+        <input type="text" name="username" maxlength="20" required>
     </p>
-    <p>Password:<br>
-        <input type="password" name="password" required>
+    <p>Password (Maximum of 20 characters):<br>
+        <input type="password" name="password" maxlength="20" required>
     </p>
     <input type="submit" value="Register">
 </form>
