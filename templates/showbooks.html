@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results</title>
+</head>
+
+<body>
+    <h1>Books found:</h1>
+
+    {% if found_books %}
+    <ul>
+        {% for book in found_books %}
+        <li>
+            <strong>Bookname:</strong> {{ book.bookname }}<br>
+            <strong>Author(s):</strong> {{ book.authors }}<br>
+            <strong>Year:</strong> {{ book.year }}<br>
+            <hr>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>{{ error_message }}</p>
+    {% endif %}
+
+    <a href="/startpage">Back to startpage</a>
+</body>
+
+</html>

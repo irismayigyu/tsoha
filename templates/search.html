@@ -1,6 +1,10 @@
 Search for a book:
 <p> Type in the title or author:
-    <input type="text" name="search" maxlength="50" required>
+    <form action="/showbooks" method="GET">
+        Search by title or author: <input type="text" name="query">
+        <br>
+        <input type="submit" value="Search">
+        </form>
 <p>
     Can't find the book you're looking for? <br>
     <a href="/addbook">
@@ -10,3 +14,6 @@ Search for a book:
     <a href="/startpage">
         <button>Back to main page</button>
     </a>
+
+
+        

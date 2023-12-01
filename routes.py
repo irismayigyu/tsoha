@@ -89,14 +89,19 @@ def result():
     query_user = text("SELECT * FROM users WHERE username = :username")
     result_user = db.session.execute(query_user, {"username": username})
     user = result_user.fetchone()
+    
+    query_book = text("SELECT id FROM books WHERE bookname = :name")
+    result_book = db.session.execute(query_book, {"name": name})
+    book = result_book.fetchone()
+
 
     if not user:
         return "User not found."
 
     try:
         query = text(
-            "INSERT INTO reviews (user_id, name, status, grade, review) VALUES (:user_id, :name, :status, :grade, :review)")
-        db.session.execute(query, {"user_id": user.id, "name": name,
+            "INSERT INTO reviews (user_id, book_id, name, status, grade, review) VALUES (:user_id, :name, :status, :grade, :review)")
+        db.session.execute(query, {"user_id": user.id, "books_id": book.id, "name": name,
                            "status": status, "grade": grade, "review": review})
         db.session.commit()
 
@@ -104,12 +109,14 @@ def result():
 
     except Exception as e:
         print(e)
-        return "Something went wrong. <a href='/form'>Try again</a>"
+        return "Something went wrong. <a href='/addreview'>Try again</a>"
 
 
 @app.route("/search")
 def search():
     return render_template("search.html")
+
+
 
 
 @app.route("/myreviews")
@@ -167,11 +174,16 @@ def find_books():
 
     return books
 
-    # query = request.args["query"]
-    # sql = "SELECT id, content FROM messages WHERE content LIKE :query"
-    # result = db.session.execute(sql, {"query":"%"+query+"%"})
-    # messages = result.fetchall()
-    # return render_template("savedreview.html", messages=messages)
+@app.route("/showbooks")
+def showbooks():
+    query = request.args["query"]
+    sql = text("SELECT * FROM books WHERE bookname LIKE :query OR author LIKE :query")
+    result = db.session.execute(sql, {"query":"%"+query+"%"})
+    found_books = result.fetchall()
+    if not found_books:
+        return "No books found."
+    return render_template("showbooks.html", found_books=found_books)
+
 
 @app.route("/addbook")
 def addbook():
