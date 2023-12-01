@@ -1,0 +1,18 @@
+<form action="/savedbook" method="POST">
+    <p>Book name:<br>
+        <input type="text" name="bookname" maxlength="50" required>
+    </p>
+
+    Author (list if many):
+    <p>
+        <input type="text" name="author" maxlength="60" required>
+    </p>
+
+    Year:
+    <p>
+        <input type="int" name="year" maxlength="4" required>
+    <p>
+        <input type="submit" value="Save">
+</form>
+
+<a href="/startpage">Back to startpage</a>
