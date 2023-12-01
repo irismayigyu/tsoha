@@ -89,19 +89,23 @@ def result():
     query_user = text("SELECT * FROM users WHERE username = :username")
     result_user = db.session.execute(query_user, {"username": username})
     user = result_user.fetchone()
-    
+
+    if not user:
+        return "User not found. <a href='/addreview'>Try again</a>"
+
     query_book = text("SELECT id FROM books WHERE bookname = :name")
     result_book = db.session.execute(query_book, {"name": name})
     book = result_book.fetchone()
 
+    if not book:
+        return "Book not found. Please add it to the database: <a href='/addreview'>Try again</a>"
 
-    if not user:
-        return "User not found."
+
 
     try:
         query = text(
-            "INSERT INTO reviews (user_id, book_id, name, status, grade, review) VALUES (:user_id, :name, :status, :grade, :review)")
-        db.session.execute(query, {"user_id": user.id, "books_id": book.id, "name": name,
+            "INSERT INTO reviews (user_id, book_id, name, status, grade, review) VALUES (:user_id, :book_id, :name, :status, :grade, :review)")
+        db.session.execute(query, {"user_id": user.id, "book_id": book.id, "name": name,
                            "status": status, "grade": grade, "review": review})
         db.session.commit()
 
