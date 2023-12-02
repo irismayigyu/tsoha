@@ -15,16 +15,14 @@
 </head>
 
 <body>
-    <h1>Books found:</h1>
+    <h1>Users found:</h1>
 
-    {% if found_books %}
+    {% if found_users %}
     <ul>
-        {% for book in found_books %}
+        {% for user in found_users %}
         <li>
-          Book:  <a href="{{ url_for('addreview', bookname=book.bookname) }}">{{ book.bookname }}</a>
-            <br>
-            <strong>Author(s):</strong> {{ book.author }}<br>
-            <strong>Year:</strong> {{ book.year }}<br>
+            <!-- <strong>User:</strong> {{ user.username }}<br> -->
+            <a href="{{ url_for('user_profile', username=user.username) }}">{{ user.username }}</a>
             <hr>
         </li>
         {% endfor %}

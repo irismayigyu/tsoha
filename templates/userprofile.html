@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+{% extends "layout.html" %}
+{% block navbar %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+</head>
+
+<body>
+    <h1>User Profile</h1>
+
+    <p><strong>Username:</strong> {{ user.username }}</p>
+    <form action="{{ url_for('send_friend_request', username=user.username) }}" method="post">
+        <button type="submit">Send Friend Request</button>
+    </form>
+
+    
+    
+
+    <a href="/startpage">Back to startpage</a>
+</body>
+
+</html>
+{% endblock %}

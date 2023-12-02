@@ -1,7 +1,7 @@
 body {
     margin: auto;
     max-width: 45em;
-    font-family: 'consolas', "roboto", 'comic sans', sans-serif;
+    font-family: sans-serif;
     background: #B9D9EB;
 }
 
@@ -15,7 +15,7 @@ nav li {
 
 h1 {
     margin: auto;
-    font-family: "consolas", "comic sans", sans-serif;
+    font-family: sans-serif;
     padding: 1em 1em;
     font-size: 2em;
     color: black

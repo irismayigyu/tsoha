@@ -8,6 +8,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask import flash
 from sqlalchemy.sql import text
 from app import app
+import re
+
 
 
 @app.route("/")
@@ -39,6 +41,23 @@ def logout():
     del session["username"]
     return redirect("/")
 
+def validate(username, password): #doesnt work yet
+    if not username or not password:
+        return "Username and password are required"
+    if not re.match("^[a-z]+$", username):
+        return "Please use only letters a-z <a href='/register'>Try again</a>"
+
+    sql = text("SELECT * FROM users WHERE username=:username")
+    result = db.session.execute(sql, {"username": username})
+    any = len(result.fetchall())
+    if any > 0:
+        return "Username already exists. <a href='/register'>Try again</a>"
+    if len(username) < 2:
+        return "Username too short. <a href='/register'>Try again</a>"
+    if len(password) < 6:
+        return "Password too short. <a href='/register'>Try again</a>"
+    if re.match("^[a-z]+$", password):
+        return "Password should contain other characters than letters. <a href='/register'>Try again</a>"
 
 @app.route("/register", methods=["POST", "GET"])
 def register():
@@ -48,12 +67,14 @@ def register():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
+        validate(username, password)
 
         existing_user = db.session.execute(
             text("SELECT * FROM users WHERE username = :username"), {"username": username}).fetchone()
         if existing_user:
             return "Username already exists. <a href='/register'>Try again</a>"
         hash_value = generate_password_hash(password)
+
         try:
             query = text(
                 "INSERT INTO users (username, password) VALUES (:username, :password)")
@@ -69,17 +90,23 @@ def register():
 
 @app.route("/startpage")
 def startpage():
-    return render_template("startpage.html")
+    if "username" not in session:
+        return "User not logged in. <a href='/'>Login</a>"
+    else:
+        return render_template("startpage.html")
 
 
-@app.route("/addreview")
-def form():
-    return render_template("addreview.html")
+@app.route("/addreview/<bookname>")
+def addreview(bookname):
+    if "username" not in session:
+        return "User not logged in. <a href='/'>Login</a>"
+    return render_template("addreview.html", name=bookname)
 
 
 @app.route("/savedreview", methods=["POST"])
-def result():
-
+def savedreview():
+    if "username" not in session:
+        return "User not logged in. <a href='/'>Login</a>"
     name = request.form["name"]
     status = request.form["status"]
     grade = request.form["grade"]
@@ -101,7 +128,6 @@ def result():
         return "Book not found. Please add it to the database: <a href='/addbook'>Add book</a> or try again: <a href='/addreview'>Make review</a>"
 
 
-
     try:
         query = text(
             "INSERT INTO reviews (user_id, book_id, name, status, grade, review) VALUES (:user_id, :book_id, :name, :status, :grade, :review)")
@@ -118,6 +144,8 @@ def result():
 
 @app.route("/search")
 def search():
+    if "username" not in session:
+        return "User not logged in. <a href='/'>Login</a>"
     return render_template("search.html")
 
 
@@ -125,6 +153,8 @@ def search():
 
 @app.route("/myreviews")
 def myreviews():
+    if "username" not in session:
+        return "User not logged in. <a href='/'>Login</a>"
     user_reviews = get_user_reviews()
 
     if isinstance(user_reviews, str):
@@ -181,6 +211,8 @@ def find_books():
 
 @app.route("/showbooks")
 def showbooks():
+    if "username" not in session:
+        return "User not logged in. <a href='/'>Login</a>"
     query = request.args["query"]
     sql = text("SELECT * FROM books WHERE bookname LIKE :query OR author LIKE :query")
     result = db.session.execute(sql, {"query":"%"+query+"%"})
@@ -191,14 +223,51 @@ def showbooks():
     return render_template("showbooks.html", found_books=found_books)
 
 
+@app.route("/showusers")
+def showusers():
+    if "username" not in session:
+        return "User not logged in. <a href='/'>Login</a>"
+    query = request.args["query"]
+    sql = text("SELECT * FROM users WHERE username LIKE :query")
+    result = db.session.execute(sql, {"query":"%"+query+"%"})
+    found_users = result.fetchall()
+    if not found_users:
+        return "No users found. Try again: <a href='/search'>Search</a>"
+
+    return render_template("showusers.html", found_users=found_users)
+
+@app.route("/send_friend_request/<username>", methods=["POST"])
+def send_friend_request(username):
+    # Add logic to send a friend request to the user with the given username
+    # You can update your database or perform any other necessary actions here
+    
+    # Redirect back to the user's profile after processing the friend request
+    return redirect("/user_profile", username=username)
+
+
+@app.route("/user_profile/<username>")
+def user_profile(username):
+    if "username" not in session:
+        return "User not logged in. <a href='/'>Login</a>"
+    query_user = text("SELECT * FROM users WHERE username = :username")
+    result_user = db.session.execute(query_user, {"username": username})
+    user = result_user.fetchone()
+
+    if not user:
+        return "User not found. <a href='/startpage'>Back to main page</a>"
+    return render_template("userprofile.html", user=user)
+
 @app.route("/addbook")
 def addbook():
+    if "username" not in session:
+        return "User not logged in. <a href='/'>Login</a>"
     return render_template("addbook.html")
 
 
 @app.route("/savedbook", methods=["POST"])
 def savedbook():
-
+    if "username" not in session:
+        return "User not logged in. <a href='/'>Login</a>"
     bookname = request.form["bookname"]
     author = request.form["author"]
     year = request.form["year"]
@@ -210,18 +279,23 @@ def savedbook():
 
     if not user:
         return "User not found."
+    sql = text("SELECT * FROM books WHERE bookname=:bookname")
+    result = db.session.execute(sql, {"bookname": bookname})
+    any = len(result.fetchall())
+    if any > 0:
+        return "Book already in database. <a href='/startpage'>Back to main page</a>"
+    else:
+        try:
+            query = text(
+                "INSERT INTO books (bookname, author, year) VALUES (:bookname, :author, :year)")
+            db.session.execute(query, { "bookname": bookname,
+                            "author": author, "year": year})
+            db.session.commit()
 
-    try:
-        query = text(
-            "INSERT INTO books (bookname, author, year) VALUES (:bookname, :author, :year)")
-        db.session.execute(query, { "bookname": bookname,
-                           "author": author, "year": year})
-        db.session.commit()
+            return render_template("savedbook.html", bookname=bookname, author=author, year=year)
 
-        return render_template("savedbook.html", bookname=bookname, author=author, year=year)
-
-    except Exception as e:
-        print(e)
-        return "Something went wrong. <a href='/addbook'>Try again</a>"
+        except Exception as e:
+            print(e)
+            return "Something went wrong. <a href='/addbook'>Try again</a>"
 
 

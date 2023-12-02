@@ -13,11 +13,10 @@ Book has been saved
     Year: {{ year }}
 
 <p>
-    <a href="/addreview">
+    <a href="{{ url_for('addreview', bookname=bookname) }}">
         <button>Review this book</button>
     </a>
+
 <p></p>
-<a href="/startpage">
-    <button>Back to main page</button>
-</a>
+
 {% endblock %}

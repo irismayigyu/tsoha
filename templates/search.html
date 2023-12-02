@@ -4,18 +4,27 @@
 {% extends "layout.html" %}
 {% block navbar %}
 
-<h2>Search for a book</h2>
+<h2>Search</h2>
 <br>
-<p> Type in the title or author:
+<p> Search for a book:
 <form action="/showbooks" method="GET">
     Search by title or author: <input type="text" name="query" required>
     <br>
     <input type="submit" value="Search">
 </form>
+<br>
+<br>
 
-<p>
+<br>
+<form action="/showusers" method="GET">
+    Search for a user: <input type="text" name="query" required>
+    <br>
+    <input type="submit" value="Search">
+</form>
+<br>
 
     Can't find the book you're looking for? <br>
+    <br>
     <a href="/addbook">
         <button>Add new book to database</button>
     </a>
@@ -24,8 +33,6 @@
     <br>
     <br>
     <br>
-    <a href="/startpage">
-        <button>Back to main page</button>
-    </a>
+
 
     {% endblock %}

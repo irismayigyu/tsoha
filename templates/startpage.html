@@ -7,29 +7,26 @@
 {% block navbar %}
 
 Welcome to MyBooks, {{ session.username }}!
-
+<br>
 <p>
-    Here you can list and review all the books you have read. 
-    You can view your reviews or make new ones, check if the book you want to review is already in the database,
-    if not, you can add it. 
+    Here you can list and review all the books you have read.
+    You can view your reviews or make new ones, search for the book you want to review from the database.
+    <div style="text-decoration: underline;">
+    You can return to the main page by clicking the 'MyBooks' icon in the left corner!
+    </div>
 <p>
+    <br>
     <a href="/myreviews">
         <button>My Reviews</button>
     </a>
 <p>
 
-    <a href="/addreview">
-        <button>New review</button>
-    </a>
 <p>
     <a href="/search">
-        <button>Search for book</button>
+        <button>Search for a book/users</button>
     </a>
     <p>
-        <a href="/addbook">
-            <button>Add new book to database</button>
-        </a>
-    <p>
+
     <a href="/logout">Log out</a>
 
 

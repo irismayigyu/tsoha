@@ -2,12 +2,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 {% extends "layout.html" %}
 {% block navbar %}
-<h2>Make a review</h2>
-<br>
 <form action="/savedreview" method="POST">
-    <p>Book name:<br>
-        <input type="text" name="name" maxlength="50" required>
-    </p>
+    <h2>Add Review for {{ name }}</h2>
+    <br>
+    <input type="hidden" name="name" value="{{ name }}">
 
     Progress:
     <p>

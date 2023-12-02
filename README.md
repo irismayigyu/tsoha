@@ -1,21 +1,23 @@
-20.11. muokattu niin että sovelluksen testaamisen pitäisi nyt onnistua.
-HUOM käytetty chatgpteetä. 
+
 
 # Kirjalistasovellus
 
-Sovellukseen lisätään itse lukemia kirjoja ja arvioidaan ne. Jokainen käyttäjä on ylläpitäjä tai peruskäyttäjä.
+MyBooks on sovellus, jossa arvostellaan kirjoja. 
 
 - Käyttäjä voi kirjautua sisään ja ulos sekä luoda uuden tunnuksen.
-- Käyttäjä voi antaa arvion 1-10 asteelta, valita statuksen ja kirjoittaa arvioinnin kirjasta.
-- Käyttäjän "omista arvioinneista" löytyy hänen tallentamansa kirjat.
-- Käyttäjät voivat lisätä kavereita ja kaverukset voivat nähdä toistensa arvioimat kirjat.
-- Käyttäjä voi etsiä kirjaa tietokannasta, jos ei löydä sitä kirjaa, hän voi itse lisätä sen tietokantaan. 
+- Käyttäjä voi antaa kirjalle arvion 1-10 asteelta, valita statuksen ja kirjoittaa arvioinnin kirjasta.
+- Käyttäjä voi poistaa oman arvostelunsa.
+- Käyttäjän "omat arvostelut" -sivulta löytyvat hänen arvostelunsa.
+- Käyttäjät voivat lisätä kavereita ja kaverukset voivat nähdä toistensa arvostelut.
+- Käyttäjä voi etsiä kirjaa tietokannasta, jos hän ei löydä sitä kirjaa, hän voi itse lisätä sen tietokantaan.
+- Käyttäjä voi valita lempikirjansa ja tarkastella lempikirjojaan sekä poistaa kirjan lempikirjoistaan.
 
 
 # Nykyinen toiminnallisuus
 - Käyttäjä voi kirjautua sisään ja ulos sekä luoda uuden tunnuksen.
-- Käyttäjä voi antaa arvion 1-10 asteelta, valita statuksen ja kirjoittaa arvioinnin kirjasta. 
-- Käyttäjän "omista kirjoista" löytyy hänen tallentamansa kirjat.
+- Käyttäjä voi antaa kirjalle arvion 1-10 asteelta, valita statuksen ja kirjoittaa arvioinnin kirjasta.
+- Käyttäjän "omat arvostelut" -sivulta löytyvat hänen arvostelunsa.
+- Käyttäjä voi etsiä kirjaa tietokannasta, jos hän ei löydä sitä kirjaa, hän voi itse lisätä sen tietokantaan.
 
 # Käynnistysohjeet
 
@@ -53,3 +55,5 @@ Käynnistä sovellus:
 flask run
 ```
 
+
+HUOM Sovelluksessa on käytetty chatgpteetä. 
