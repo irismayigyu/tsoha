@@ -1,6 +1,17 @@
+
+<!DOCTYPE html>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+{% extends "layout.html" %}
+{% block navbar %}
+
 Welcome to MyBooks, {{ session.username }}!
+
 <p>
-    Here you can list and review all the books you have read.
+    Here you can list and review all the books you have read. 
+    You can view your reviews or make new ones, check if the book you want to review is already in the database,
+    if not, you can add it. 
 <p>
     <a href="/myreviews">
         <button>My Reviews</button>
@@ -18,4 +29,8 @@ Welcome to MyBooks, {{ session.username }}!
         <a href="/addbook">
             <button>Add new book to database</button>
         </a>
+    <p>
     <a href="/logout">Log out</a>
+
+
+    {% endblock %}

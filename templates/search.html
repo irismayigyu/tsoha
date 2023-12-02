@@ -1,19 +1,31 @@
-Search for a book:
+<!DOCTYPE html>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+{% extends "layout.html" %}
+{% block navbar %}
+
+<h2>Search for a book</h2>
+<br>
 <p> Type in the title or author:
-    <form action="/showbooks" method="GET">
-        Search by title or author: <input type="text" name="query">
-        <br>
-        <input type="submit" value="Search">
-        </form>
+<form action="/showbooks" method="GET">
+    Search by title or author: <input type="text" name="query" required>
+    <br>
+    <input type="submit" value="Search">
+</form>
+
 <p>
+
     Can't find the book you're looking for? <br>
     <a href="/addbook">
         <button>Add new book to database</button>
     </a>
-<p>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
     <a href="/startpage">
         <button>Back to main page</button>
     </a>
 
-
-        
+    {% endblock %}

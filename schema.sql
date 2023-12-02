@@ -27,4 +27,10 @@ CREATE TABLE IF NOT EXISTS reviews (
 );
 
 
+CREATE TABLE IF NOT EXISTS favourites (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id),
+    book_id INTEGER REFERENCES books(id),
+    book INTEGER REFERENCES books(bookname),
+);
 

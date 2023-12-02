@@ -98,7 +98,7 @@ def result():
     book = result_book.fetchone()
 
     if not book:
-        return "Book not found. Please add it to the database: <a href='/addreview'>Try again</a>"
+        return "Book not found. Please add it to the database: <a href='/addbook'>Add book</a> or try again: <a href='/addreview'>Make review</a>"
 
 
 
@@ -136,7 +136,8 @@ def myreviews():
 
 def get_user_reviews():
     if "username" not in session:
-        return "User not logged in."
+        return "User not logged in. <a href='/'>Login</a>"
+
 
     username = session['username']
 
@@ -145,7 +146,7 @@ def get_user_reviews():
     user = result_user.fetchone()
 
     if not user:
-        return "User not found."
+        return "User not found. <a href='/register'>Register</a>"
 
     query_reviews = text("SELECT * FROM reviews WHERE user_id = :user_id")
     result_reviews = db.session.execute(query_reviews, {"user_id": user.id})
@@ -158,7 +159,7 @@ def get_user_reviews():
 
 def find_books():
     if "username" not in session:
-        return "User not logged in."
+        return "User not logged in. <a href='/'>Login</a>"
 
     username = session['username']
 
@@ -167,14 +168,14 @@ def find_books():
     user = result_user.fetchone()
 
     if not user:
-        return "User not found."
+        return "User not found. <a href='/register'>Register</a>"
     query = request.args["query"]
     query_book = text("SELECT * FROM books WHERE WHERE content LIKE :query")
     result_book = db.session.execute(query_book, {"user_id": user.id})
     books = result_book.fetchall()
 
     if not books:
-        return "No reviews found."
+        return "No reviews found. <a href='/startpage'>Back to main page</a>"
 
     return books
 
@@ -185,7 +186,8 @@ def showbooks():
     result = db.session.execute(sql, {"query":"%"+query+"%"})
     found_books = result.fetchall()
     if not found_books:
-        return "No books found."
+        return "Book not found. Please add it to the database: <a href='/addbook'>Add book</a> or try search again: <a href='/search'>Search</a>"
+
     return render_template("showbooks.html", found_books=found_books)
 
 

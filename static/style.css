@@ -1,0 +1,31 @@
+body {
+    margin: auto;
+    max-width: 45em;
+    font-family: 'consolas', "roboto", 'comic sans', sans-serif;
+    background: #B9D9EB;
+}
+
+nav li {
+    display: inline-block;
+    padding: 0 .5em;
+    padding: .5em 1em;
+    border-radius: .5em;
+    text-align: center;
+}
+
+h1 {
+    margin: auto;
+    font-family: "consolas", "comic sans", sans-serif;
+    padding: 1em 1em;
+    font-size: 2em;
+    color: black
+}
+
+h1 a{
+    color: inherit;
+}
+h2 {
+    margin: auto;
+    font-family: "consolas", "comic sans", sans-serif;
+    font-size: 1.7em;
+}
