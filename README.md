@@ -21,6 +21,7 @@ MyBooks on sovellus, jossa arvostellaan kirjoja.
 - Käyttäjän "omat arvostelut" -sivulta löytyvat hänen arvostelunsa.
 - Käyttäjä voi etsiä kirjaa tietokannasta, jos hän ei löydä sitä kirjaa, hän voi itse lisätä sen tietokantaan.
 - Käyttäjät voivat hakea ja lisätä kavereita ja kaverukset voivat nähdä toistensa arvostelut.
+- Käyttäjä voi valita lempikirjansa ja tarkastella lempikirjojaan.
 
 # Käynnistysohjeet
 
