@@ -35,8 +35,8 @@ CREATE TABLE IF NOT EXISTS favourites (
 
 CREATE TABLE IF NOT EXISTS friends (
     id SERIAL PRIMARY KEY,
-    user1 INTEGER REFERENCES users(id),
-    user2 INTEGER REFERENCES users(id)
+    user1 TEXT REFERENCES users(username),
+    user2 TEXT REFERENCES users(username)
 );
 
 -- DROP TABLE friends;

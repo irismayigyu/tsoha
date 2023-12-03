@@ -11,7 +11,6 @@ from app import app
 import re
 
 
-
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -41,23 +40,19 @@ def logout():
     del session["username"]
     return redirect("/")
 
-def validate(username, password): #doesnt work yet
+
+def validate(username, password): 
     if not username or not password:
         return "Username and password are required"
     if not re.match("^[a-z]+$", username):
-        return "Please use only letters a-z <a href='/register'>Try again</a>"
-
-    sql = text("SELECT * FROM users WHERE username=:username")
-    result = db.session.execute(sql, {"username": username})
-    any = len(result.fetchall())
-    if any > 0:
-        return "Username already exists. <a href='/register'>Try again</a>"
+        return "Please use only letters a-z for username. <a href='/register'>Try again</a>"
     if len(username) < 2:
         return "Username too short. <a href='/register'>Try again</a>"
     if len(password) < 6:
         return "Password too short. <a href='/register'>Try again</a>"
     if re.match("^[a-z]+$", password):
         return "Password should contain other characters than letters. <a href='/register'>Try again</a>"
+
 
 @app.route("/register", methods=["POST", "GET"])
 def register():
@@ -67,7 +62,9 @@ def register():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-        validate(username, password)
+        validation = validate(username, password)
+        if validation is not None:
+            return validation
 
         existing_user = db.session.execute(
             text("SELECT * FROM users WHERE username = :username"), {"username": username}).fetchone()
@@ -127,7 +124,6 @@ def savedreview():
     if not book:
         return "Book not found. Please add it to the database: <a href='/addbook'>Add book</a> or try again: <a href='/addreview'>Make review</a>"
 
-
     try:
         query = text(
             "INSERT INTO reviews (user_id, book_id, name, status, grade, review) VALUES (:user_id, :book_id, :name, :status, :grade, :review)")
@@ -149,8 +145,6 @@ def search():
     return render_template("search.html")
 
 
-
-
 @app.route("/myreviews")
 def myreviews():
     if "username" not in session:
@@ -163,11 +157,9 @@ def myreviews():
     return render_template("myreviews.html", user_reviews=user_reviews)
 
 
-
 def get_user_reviews():
     if "username" not in session:
         return "User not logged in. <a href='/'>Login</a>"
-
 
     username = session['username']
 
@@ -176,7 +168,7 @@ def get_user_reviews():
     user = result_user.fetchone()
 
     if not user:
-        return "User not found. <a href='/register'>Register</a>"
+        return redirect("/")
 
     query_reviews = text("SELECT * FROM reviews WHERE user_id = :user_id")
     result_reviews = db.session.execute(query_reviews, {"user_id": user.id})
@@ -186,6 +178,7 @@ def get_user_reviews():
         return "No reviews found."
 
     return user_reviews
+
 
 def find_books():
     if "username" not in session:
@@ -209,13 +202,15 @@ def find_books():
 
     return books
 
+
 @app.route("/showbooks")
 def showbooks():
     if "username" not in session:
         return "User not logged in. <a href='/'>Login</a>"
     query = request.args["query"]
-    sql = text("SELECT * FROM books WHERE bookname LIKE :query OR author LIKE :query")
-    result = db.session.execute(sql, {"query":"%"+query+"%"})
+    sql = text(
+        "SELECT * FROM books WHERE bookname LIKE :query OR author LIKE :query")
+    result = db.session.execute(sql, {"query": "%"+query+"%"})
     found_books = result.fetchall()
     if not found_books:
         return "Book not found. Please add it to the database: <a href='/addbook'>Add book</a> or try search again: <a href='/search'>Search</a>"
@@ -229,33 +224,67 @@ def showusers():
         return "User not logged in. <a href='/'>Login</a>"
     query = request.args["query"]
     sql = text("SELECT * FROM users WHERE username LIKE :query")
-    result = db.session.execute(sql, {"query":"%"+query+"%"})
+    result = db.session.execute(sql, {"query": "%"+query+"%"})
     found_users = result.fetchall()
     if not found_users:
         return "No users found. Try again: <a href='/search'>Search</a>"
 
     return render_template("showusers.html", found_users=found_users)
 
-@app.route("/send_friend_request/<username>", methods=["POST"])
-def send_friend_request(username):
-    # Add logic to send a friend request to the user with the given username
-    # You can update your database or perform any other necessary actions here
-    
-    # Redirect back to the user's profile after processing the friend request
-    return redirect("/user_profile", username=username)
+@app.route("/showfriends")
+def showfriends():
+    if "username" not in session:
+        return "User not logged in. <a href='/'>Login</a>"
+    query = request.args["query"]
+    sql = text(
+        "SELECT * FROM friends WHERE bookname LIKE :query OR author LIKE :query")
+    result = db.session.execute(sql, {"query": "%"+query+"%"})
+    found_books = result.fetchall()
+    if not found_books:
+        return "No friends yet."
 
+    return render_template("showbooks.html", found_books=found_books)
 
-@app.route("/user_profile/<username>")
-def user_profile(username):
+@app.route("/userprofile/<username>", methods=['GET', 'POST'])
+def userprofile(username):
     if "username" not in session:
         return "User not logged in. <a href='/'>Login</a>"
     query_user = text("SELECT * FROM users WHERE username = :username")
     result_user = db.session.execute(query_user, {"username": username})
     user = result_user.fetchone()
 
+    current_user = session["username"]
     if not user:
         return "User not found. <a href='/startpage'>Back to main page</a>"
+    if request.method == 'POST':
+        connect = request.form.get('connect')
+        viewed_user = request.form.get('viewed_user')
+        sql = text(
+            "SELECT * FROM friends WHERE user1=:current_user AND user2=:viewed_user")
+        result = db.session.execute(
+            sql, {"current_user": current_user, "viewed_user": viewed_user})
+        any = len(result.fetchall())
+        if any == 0 and connect == "yes":
+            query = text(
+                "INSERT INTO friends (user1, user2) VALUES (:current_user, :viewed_user)")
+            db.session.execute(
+                query, {"current_user": current_user, "viewed_user": viewed_user})
+            db.session.commit()
+
+        sql = text(
+            "SELECT * FROM friends WHERE user1=:current_user AND user2=:viewed_user")
+        result = db.session.execute(
+            sql, {"current_user": current_user, "viewed_user": viewed_user})
+        any = len(result.fetchall())
+        if any > 0 and connect == "no":
+            query = text(
+                "DELETE FROM friends WHERE user1=:current_user AND user2=:viewed_user")
+            db.session.execute(
+                query, {"current_user": current_user, "viewed_user": viewed_user})
+            db.session.commit()
+# tee nii et ei voi olla ittensä frendi.
     return render_template("userprofile.html", user=user)
+
 
 @app.route("/addbook")
 def addbook():
@@ -288,8 +317,8 @@ def savedbook():
         try:
             query = text(
                 "INSERT INTO books (bookname, author, year) VALUES (:bookname, :author, :year)")
-            db.session.execute(query, { "bookname": bookname,
-                            "author": author, "year": year})
+            db.session.execute(query, {"bookname": bookname,
+                                       "author": author, "year": year})
             db.session.commit()
 
             return render_template("savedbook.html", bookname=bookname, author=author, year=year)

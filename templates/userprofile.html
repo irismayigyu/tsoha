@@ -1,30 +1,22 @@
 <!DOCTYPE html>
-
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 {% extends "layout.html" %}
+
 {% block navbar %}
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile</title>
-</head>
-
-<body>
     <h1>User Profile</h1>
-
+    You can connect with other MyBooks users, if they have also connected with you, you will see each others reviews. 
+    You can choose no if you want to delete a connection.
+    <br>
     <p><strong>Username:</strong> {{ user.username }}</p>
-    <form action="{{ url_for('send_friend_request', username=user.username) }}" method="post">
-        <button type="submit">Send Friend Request</button>
+
+    <form method="post" >
+        <input type="hidden" name="viewed_user" value="{{ user.username }}">
+        Connect?: <br>
+        <input type="radio" name="connect" value="yes"> yes
+        <input type="radio" name="connect" value="no"> no
+        <br>
+        <br>
+        <button type="submit">Submit</button>
     </form>
-
-    
-    
-
-    <a href="/startpage">Back to startpage</a>
-</body>
-
-</html>
 {% endblock %}
