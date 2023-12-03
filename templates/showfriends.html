@@ -15,28 +15,26 @@
 </head>
 
 <body>
-    <h1>Users found:</h1>
+    <h1>Friends:</h1>
 
-    {% if found_users %}
+    {% if found_friends %}
     <ul>
-        {% for user in found_users %}
+        {% for friend in found_friends %}
         <li>
-            {% if user.username == session["username"] %}
-                <a href="{{ url_for('startpage') }}">{{ user.username }}</a>
-                {% else %}
-            <a href="{{ url_for('userprofile', username=user.username) }}">{{ user.username }}</a>
+            {% if friend.friend1 == session_user %}
+                <!-- <a href="/showfriends">{{ friend.friend2 }}</a> -->
+                <a href="{{ url_for('userprofile', username=friend.friend2) }}">{{ friend.friend2 }}</a>
+            {% else %}
+                <a href="{{ url_for('userprofile', username=friend.friend1) }}">{{ friend.friend1 }}</a>
             {% endif %}
             <hr>
         </li>
         {% endfor %}
     </ul>
     {% else %}
-    <p>{{ error_message }}</p>
+    <p>No friends yet.</p>
     {% endif %}
-
-
 </body>
 
 </html>
-
 {% endblock %}

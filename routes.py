@@ -22,7 +22,7 @@ def login():
     password = request.form["password"]
 
     user = db.session.execute(
-        text("SELECT * FROM users WHERE username = :username"), {"username": username}).fetchone()
+        text("SELECT username, password FROM users WHERE username = :username"), {"username": username}).fetchone()
     if not user:
         return "Username not found. <a href='/'>Try again</a>"
 
@@ -63,7 +63,7 @@ def register():
         username = request.form["username"]
         password = request.form["password"]
         validation = validate(username, password)
-        if validation is not None:
+        if validation:
             return validation
 
         existing_user = db.session.execute(
@@ -110,7 +110,7 @@ def savedreview():
     review = request.form["review"]
 
     username = session['username']
-    query_user = text("SELECT * FROM users WHERE username = :username")
+    query_user = text("SELECT username,password FROM users WHERE username = :username")
     result_user = db.session.execute(query_user, {"username": username})
     user = result_user.fetchone()
 
@@ -186,7 +186,7 @@ def find_books():
 
     username = session['username']
 
-    query_user = text("SELECT * FROM users WHERE username = :username")
+    query_user = text("SELECT username, password FROM users WHERE username = :username")
     result_user = db.session.execute(query_user, {"username": username})
     user = result_user.fetchone()
 
@@ -223,7 +223,7 @@ def showusers():
     if "username" not in session:
         return "User not logged in. <a href='/'>Login</a>"
     query = request.args["query"]
-    sql = text("SELECT * FROM users WHERE username LIKE :query")
+    sql = text("SELECT username FROM users WHERE username LIKE :query")
     result = db.session.execute(sql, {"query": "%"+query+"%"})
     found_users = result.fetchall()
     if not found_users:
@@ -235,15 +235,21 @@ def showusers():
 def showfriends():
     if "username" not in session:
         return "User not logged in. <a href='/'>Login</a>"
-    query = request.args["query"]
-    sql = text(
-        "SELECT * FROM friends WHERE bookname LIKE :query OR author LIKE :query")
-    result = db.session.execute(sql, {"query": "%"+query+"%"})
-    found_books = result.fetchall()
-    if not found_books:
-        return "No friends yet."
+    user = session["username"] #ei toimi
+    sql = text("SELECT DISTINCT user1 AS friend1, user2 AS friend2 "
+        "FROM friends f1 WHERE (:user IN (f1.user1, f1.user2)) "
+        "AND EXISTS (SELECT 1 FROM friends f2 WHERE "
+        "(:user IN (f2.user1, f2.user2) AND "
+        "((f1.user1=f2.user1 AND f1.user2=f2.user2) OR "
+        "(f1.user1=f2.user2 AND f1.user2=f2.user1))))")
 
-    return render_template("showbooks.html", found_books=found_books)
+    result = db.session.execute(sql, {"user": user})
+
+    found_friends = result.fetchall()
+    print(found_friends)
+    if not found_friends:
+        return "No friends yet."
+    return render_template("showfriends.html", found_friends=found_friends, session_user=user)
 
 @app.route("/userprofile/<username>", methods=['GET', 'POST'])
 def userprofile(username):
@@ -259,8 +265,9 @@ def userprofile(username):
     if request.method == 'POST':
         connect = request.form.get('connect')
         viewed_user = request.form.get('viewed_user')
+
         sql = text(
-            "SELECT * FROM friends WHERE user1=:current_user AND user2=:viewed_user")
+            "SELECT user1, user2 FROM friends WHERE user1=:current_user AND user2=:viewed_user") #tarkista löytyykö jo tietokannasta
         result = db.session.execute(
             sql, {"current_user": current_user, "viewed_user": viewed_user})
         any = len(result.fetchall())
@@ -302,7 +309,7 @@ def savedbook():
     year = request.form["year"]
 
     username = session['username']
-    query_user = text("SELECT * FROM users WHERE username = :username")
+    query_user = text("SELECT username FROM users WHERE username = :username")
     result_user = db.session.execute(query_user, {"username": username})
     user = result_user.fetchone()
 
