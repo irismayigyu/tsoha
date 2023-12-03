@@ -22,7 +22,6 @@
         {% for friend in found_friends %}
         <li>
             {% if friend.friend1 == session_user %}
-                <!-- <a href="/showfriends">{{ friend.friend2 }}</a> -->
                 <a href="{{ url_for('userprofile', username=friend.friend2) }}">{{ friend.friend2 }}</a>
             {% else %}
                 <a href="{{ url_for('userprofile', username=friend.friend1) }}">{{ friend.friend1 }}</a>

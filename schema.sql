@@ -1,4 +1,9 @@
 
+DROP TABLE friends;
+DROP TABLE favourites;
+DROP TABLE reviews;
+DROP TABLE books;
+DROP TABLE users;
 
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
@@ -39,8 +44,3 @@ CREATE TABLE IF NOT EXISTS friends (
     user2 TEXT REFERENCES users(username)
 );
 
--- DROP TABLE friends;
--- DROP TABLE favourites;
--- DROP TABLE reviews;
--- DROP TABLE books;
--- DROP TABLE users;

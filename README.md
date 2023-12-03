@@ -1,5 +1,7 @@
 
 
+HUOM tällä hetkellä käyttäjistä tulee kaveruksia jo kun vain toinen on "connectannut" toisen kanssa. Eli ongelmasta ollaan tietoisia ja työn alla on jo sellainen toiminnallisuus, että he olisivat kaveruksia vain jos Molemmat ovat niin päättäneet.
+
 # Kirjalistasovellus
 
 MyBooks on sovellus, jossa arvostellaan kirjoja. 
@@ -8,7 +10,7 @@ MyBooks on sovellus, jossa arvostellaan kirjoja.
 - Käyttäjä voi antaa kirjalle arvion 1-10 asteelta, valita statuksen ja kirjoittaa arvioinnin kirjasta.
 - Käyttäjä voi poistaa oman arvostelunsa.
 - Käyttäjän "omat arvostelut" -sivulta löytyvat hänen arvostelunsa.
-- Käyttäjät voivat lisätä kavereita ja kaverukset voivat nähdä toistensa arvostelut.
+- Käyttäjät voivat hakea ja lisätä kavereita ja kaverukset voivat nähdä toistensa arvostelut.
 - Käyttäjä voi etsiä kirjaa tietokannasta, jos hän ei löydä sitä kirjaa, hän voi itse lisätä sen tietokantaan.
 - Käyttäjä voi valita lempikirjansa ja tarkastella lempikirjojaan sekä poistaa kirjan lempikirjoistaan.
 
@@ -18,6 +20,7 @@ MyBooks on sovellus, jossa arvostellaan kirjoja.
 - Käyttäjä voi antaa kirjalle arvion 1-10 asteelta, valita statuksen ja kirjoittaa arvioinnin kirjasta.
 - Käyttäjän "omat arvostelut" -sivulta löytyvat hänen arvostelunsa.
 - Käyttäjä voi etsiä kirjaa tietokannasta, jos hän ei löydä sitä kirjaa, hän voi itse lisätä sen tietokantaan.
+- Käyttäjät voivat hakea ja lisätä kavereita ja kaverukset voivat nähdä toistensa arvostelut.
 
 # Käynnistysohjeet
 

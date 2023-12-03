@@ -29,7 +29,24 @@ Welcome to MyBooks, {{ session.username }}!
         <a href="/showfriends">
             <button>My friends</button>
         </a>
+
+        <hr>
+        {% if fav_books %}
+        <hr>
+        Your favorite books:
+        <ul>
+            {% for book in fav_books %}
+                <li>{{ book.bookname }} by {{ book.author }} ({{ book.year }})</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You don't have favorite books listed.</p>
+    {% endif %}
+    <hr>
+    
     <a href="/logout">Log out</a>
 
 
     {% endblock %}
+
+    
