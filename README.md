@@ -4,7 +4,9 @@ HUOM tällä hetkellä käyttäjistä tulee kaveruksia jo kun vain toinen on "co
 
 # Kirjalistasovellus
 
-MyBooks on sovellus, jossa arvostellaan kirjoja. 
+MyBooks on sovellus, johon käyttäjä voi lisätä ja arvostella lukemiaan kirjoja. Sovellus on alustavasti omaan käyttöön ja toimii ns digitaalisena "kirjapäiväkirjana". Tulevaisuudessa sovellusta voisi laajentaa niin että profiili voisi olla julkinen ja käyttäjät voisivat nähdä toistensa arvosteluja. Tällä hetkellä myös kaverukset voivat lisätä toisensa ja näin nähdä toistensa arvostelut.
+
+# Toiminnallisuusideoita
 
 - Käyttäjä voi kirjautua sisään ja ulos sekä luoda uuden tunnuksen.
 - Käyttäjä voi antaa kirjalle arvion 1-10 asteelta, valita statuksen ja kirjoittaa arvioinnin kirjasta.
@@ -13,6 +15,10 @@ MyBooks on sovellus, jossa arvostellaan kirjoja.
 - Käyttäjät voivat hakea ja lisätä kavereita ja kaverukset voivat nähdä toistensa arvostelut.
 - Käyttäjä voi etsiä kirjaa tietokannasta, jos hän ei löydä sitä kirjaa, hän voi itse lisätä sen tietokantaan.
 - Käyttäjä voi valita lempikirjansa ja tarkastella lempikirjojaan sekä poistaa kirjan lempikirjoistaan.
+- Käyttäjä voi nähdä arvostelunsa julkaisupäivän. 
+- Kirjalla olisi oma sivusto, jossa näkyy kaikki siitä kirjoitetut arvostelut.
+- Kaverit näkisivät feedillä toistensa uusimmat arvostelut.
+- Käyttäjä voisi nähdä mielekkäitä tilastoja lukemistaan kirjoista esim keskiarvo-arvosana hänen lukemilleen kirjoille.
 
 
 # Nykyinen toiminnallisuus
