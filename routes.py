@@ -9,6 +9,7 @@ from app import app
 import re
 import secrets
 import users
+from datetime import datetime
 
 
 @app.route("/")
@@ -105,7 +106,8 @@ def get_user_id(username):
 def addreview(bookname):
     if "username" not in session:
         return render_template("error.html", username="username", hint="User not logged in.")
-    return render_template("addreview.html", name=bookname)
+    review_date = datetime.now().strftime("%Y-%m-%d")
+    return render_template("addreview.html", name=bookname, review_date=review_date)
 
 
 def check_user_exists(username):
@@ -127,6 +129,7 @@ def savedreview():
     status = request.form["status"]
     grade = request.form["grade"]
     review = request.form["review"]
+    review_date = request.form["review_date"]
 
     username = session['username']
     user = check_user_exists(username)
@@ -139,13 +142,15 @@ def savedreview():
 
     try:
         query = text(
-            "INSERT INTO reviews (user_id, book_id, name, status, grade, review)"
-            " VALUES (:user_id, :book_id, :name, :status, :grade, :review)")
+            "INSERT INTO reviews (user_id, book_id, name, status, grade, review, review_date)"
+            " VALUES (:user_id, :book_id, :name, :status, :grade, :review, :review_date)"
+            " ON CONFLICT (user_id, book_id) DO UPDATE"
+            " SET name = :name, status = :status, grade = :grade, review = :review, review_date = :review_date")
         db.session.execute(query, {"user_id": user.id, "book_id": book.id, "name": name,
-                                   "status": status, "grade": grade, "review": review})
+                                "status": status, "grade": grade, "review": review, "review_date": review_date})
         db.session.commit()
-
-        return render_template("savedreview.html", name=name, status=status, grade=grade, review=review)
+        return render_template("savedreview.html", name=name, status=status, grade=grade, review=review, review_date=review_date)
+        
 
     except Exception:
         return "Something went wrong. <a href='/addreview'>Try again</a>"

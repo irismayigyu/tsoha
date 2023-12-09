@@ -27,7 +27,8 @@ CREATE TABLE IF NOT EXISTS reviews (
     name TEXT,
     status TEXT,
     grade INTEGER,
-    review TEXT
+    review TEXT,
+    review_date DATE
 );
 
 
@@ -44,3 +45,5 @@ CREATE TABLE IF NOT EXISTS friends (
     user2 TEXT REFERENCES users(username)
 );
 
+ALTER TABLE reviews
+ADD CONSTRAINT user_book_unique_constraint UNIQUE (user_id, book_id);

@@ -4,7 +4,8 @@
 {% extends "layout.html" %}
 {% block nonavbar %}
 
-Your review has been saved
+<h5>Your review has been saved!</h5>
+<br>
 <p>
     Name: {{ name }}
 <p>
@@ -15,7 +16,7 @@ Your review has been saved
     Your review: <br>
     {{ review }}
 <p>
-    <a href="/startpage">
-        <button>Back to main page</button>
-    </a>
+    Date: {{ review_date }}
+    <br>
+
     {% endblock %}
