@@ -8,6 +8,7 @@ from sqlalchemy.sql import text
 from app import app
 import re
 import secrets
+import users
 
 
 @app.route("/")
@@ -19,9 +20,7 @@ def index():
 def login():
     username = request.form["username"]
     password = request.form["password"]
-
-    user = db.session.execute(
-        text("SELECT id, username, password FROM users WHERE username = :username"), {"username": username}).fetchone()
+    user=users.login(username, password)
     if not user:
         return render_template("error.html", username=username, hint="Username not found.")
 
@@ -37,22 +36,11 @@ def login():
 
 @app.route("/logout")
 def logout():
-    session.pop("username", None)
+    users.logout()
     return redirect("/")
 
 
-def validate(username, password):
-    if not username or not password:
-        return render_template("error.html", username=username, hint="Username and password required.")
-    if not re.match("^[a-z]+$", username):
-        return render_template("error.html", hint="Please use only letters a-z for username.")
-    if len(username) < 2:
-        return render_template("error.html", hint="Username too short.")
-    if len(password) < 6:
-        return render_template("error.html", hint="Password too short.")
-    if re.match("^[a-z]+$", password):
-        return render_template("error.html", hint="Password should contain other characters than letters.")
-    return True
+
 
 
 @app.route("/register", methods=["POST", "GET"])
@@ -62,25 +50,20 @@ def register():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-        validation = validate(username, password)
-        if validation:
-            return validation
-
-        existing_user = db.session.execute(
-            text("SELECT * FROM users WHERE username = :username"), {"username": username}).fetchone()
-        if existing_user:
+        validation = users.validate(username, password)
+        if validation=="error1":
+            return render_template("error.html", username=username, hint="Username and password required.")
+        elif validation=="error2":
+            return render_template("error.html", hint="Please use only letters a-z for username.")
+        elif validation=="error3":
+            return render_template("error.html", hint="Username too short..")
+        elif validation=="error4":
+            return render_template("error.html", hint="Password too short.")
+        elif validation=="error5":
+            return render_template("error.html", hint="Password should contain other characters than letters.")
+        elif validation=="error6":
             return render_template("error.html", username="username", hint="Username already exists.")
-        hash_value = generate_password_hash(password)
-
-        try:
-            query = text(
-                "INSERT INTO users (username, password) VALUES (:username, :password)")
-            db.session.execute(
-                query, {"username": username, "password": hash_value})
-            db.session.commit()
-        except Exception:
-            return render_template("error.html", username="username", hint="Something went wrong.")
-        session["username"] = username
+        users.register(username, password)
         return redirect("/")
     return False
 
@@ -106,7 +89,6 @@ def startpage():
         return render_template("error.html", username="username", hint="User not logged in.")
 
     username = session["username"]
-    #user_id = get_user_id(username)
     fav_books = get_user_favorite_books(username)
     return render_template("startpage.html", fav_books=fav_books)
 
@@ -129,9 +111,6 @@ def addreview(bookname):
 def check_user_exists(username):
     user = db.session.execute(
         text("SELECT * FROM users WHERE username = :username"), {"username": username}).fetchone()
-    # query_user = text("SELECT * FROM users WHERE username = :username")
-    # result_user = db.session.execute(query_user, {"username": username})
-    # user = result_user.fetchone()
     if not user:
         return render_template("error.html", username="username", hint="User not found.")
     return user
@@ -183,6 +162,10 @@ def search():
 def myreviews():
     if "username" not in session:
         return render_template("error.html", username="username", hint="User not logged in.")
+    username = session['username']
+    user_id = get_user_id(username)
+    if not user_id:
+        return "User not found. <a href='/'>Login</a>"
     user_reviews = get_user_reviews()
 
     if isinstance(user_reviews, str):
@@ -333,25 +316,23 @@ def showfriends():
 @app.route("/userprofile/<username>", methods=['GET', 'POST'])
 def userprofile(username):
     if "username" not in session:
-        return render_template("error.html", username="username", hint="User not logged in.")
-    username = session['username']
-    user = check_user_exists(username)
+        return "User not logged in. <a href='/'>Login</a>"
+    query_user = text("SELECT * FROM users WHERE username = :username")
+    result_user = db.session.execute(query_user, {"username": username})
+    user = result_user.fetchone()
 
     current_user = session["username"]
     if not user:
         return "User not found. <a href='/startpage'>Back to main page</a>"
     if request.method == 'POST':
-        if session["csrf_token"] != request.form["csrf_token"]:
-            return render_template("error.html", username="username", hint="Invalid CSRF token.")
         connect = request.form.get('connect')
         viewed_user = request.form.get('viewed_user')
-
         sql = text(
-            "SELECT user1, user2 FROM friends WHERE user1=:current_user AND user2=:viewed_user")
+            "SELECT * FROM friends WHERE user1=:current_user AND user2=:viewed_user")
         result = db.session.execute(
             sql, {"current_user": current_user, "viewed_user": viewed_user})
-        found = len(result.fetchall())
-        if found == 0 and connect == "yes":
+        any = len(result.fetchall())
+        if any == 0 and connect == "yes":
             query = text(
                 "INSERT INTO friends (user1, user2) VALUES (:current_user, :viewed_user)")
             db.session.execute(
@@ -362,8 +343,8 @@ def userprofile(username):
             "SELECT * FROM friends WHERE user1=:current_user AND user2=:viewed_user")
         result = db.session.execute(
             sql, {"current_user": current_user, "viewed_user": viewed_user})
-        found = len(result.fetchall())
-        if found > 0 and connect == "no":
+        any = len(result.fetchall())
+        if any > 0 and connect == "no":
             query = text(
                 "DELETE FROM friends WHERE user1=:current_user AND user2=:viewed_user")
             db.session.execute(
@@ -371,6 +352,8 @@ def userprofile(username):
             db.session.commit()
 # tee nii et ei voi olla ittensä frendi.
     return render_template("userprofile.html", user=user)
+
+
 
 
 @app.route("/addbook")
