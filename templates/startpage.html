@@ -4,31 +4,31 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 {% extends "layout.html" %}
-{% block navbar %}
 
-Welcome to MyBooks, {{ session.username }}!
-<br>
-<p>
-    Here you can list and review all the books you have read.
-    You can view your reviews or make new ones, search for the book you want to review from the database.
-    <div style="text-decoration: underline;">
-    You can return to the main page by clicking the 'MyBooks' icon in the left corner!
-    </div>
-<p>
+{% block nonavbar %}
+    Welcome to MyBooks, {{ session.username }}!
+    <br>
+    <p>
+        Here you can list and review all the books you have read.
+        You can view your reviews or make new ones, search for the book you want to review from the database.
+        <div style="text-decoration: underline;">
+            You can return to the main page by clicking the 'MyBooks' icon in the left corner!
+        </div>
+    <p>
     <br>
     <a href="/myreviews">
         <button>My Reviews</button>
     </a>
-<p>
-
-<p>
-    <a href="/search">
-        <button>Search for a book/users</button>
-    </a>
     <p>
-        <a href="/showfriends">
-            <button>My friends</button>
+
+    <p>
+        <a href="/search">
+            <button>Search for a book/users</button>
         </a>
+        <p>
+            <a href="/showfriends">
+                <button>My friends</button>
+            </a>
 
         <hr>
         {% if fav_books %}
@@ -39,14 +39,10 @@ Welcome to MyBooks, {{ session.username }}!
                 <li>{{ book.bookname }} by {{ book.author }} ({{ book.year }})</li>
             {% endfor %}
         </ul>
-    {% else %}
-        <p>You don't have favorite books listed.</p>
-    {% endif %}
-    <hr>
-    
-    <a href="/logout">Log out</a>
+        {% else %}
+            <p>You don't have favorite books listed.</p>
+        {% endif %}
+        <hr>
 
 
-    {% endblock %}
-
-    
+{% endblock %}

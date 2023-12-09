@@ -2,7 +2,7 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 {% extends "layout.html" %}
-{% block navbar %}
+{% block nonavbar %}
 
 <h2>Add a book</h2>
 <br>
@@ -19,7 +19,7 @@
 
     Year:
     <p>
-        <input type="int" name="year" maxlength="4" required>
+        <input type="number" name="year" min="0" maxlength="4" required>
     <p>
         <input type="submit" value="Save">
 </form>

@@ -1,38 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>MyBooks</title>
-        <link rel="stylesheet" href="../static/style.css">
-    </head>
-    <body>
-    
-        <h1><a href="/startpage">MyBooks</a></h1>
-    
-        <nav class="navbar">
-            <ul>
-                {% block navbar %}
-                <li><a href="/">Login</a></li>
-                <li><a href="/register">Register</a></li>
-                {% endblock %}
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyBooks</title>
+    <link rel="stylesheet" href="../static/style.css">
+    {% block additional_styles %}{% endblock %}
+</head>
+<body>
+    <h1><a href="/startpage">MyBooks</a></h1>
+    <div class="container">
+        <nav class="navbar navbar-expand-sm navbar-light">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/myreviews">My reviews</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/search">Search</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/showfriends">My friends</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout">Log out</a>
+                </li>
             </ul>
         </nav>
-
-    <section class="columns">
-        <div class="column">
-            {% block content1 %}
-
-            {% endblock %}
+        
+        <div class="row">
+            {% block content %}{% endblock %}
         </div>
-        <div class="column">
-            {% block content2 %}
+    </div>
 
-            {% endblock %}
-        </div>
-    </section>
-    
-    </body>
+    {% block nonavbar %}{% endblock %}
+</body>
 </html>
-    
