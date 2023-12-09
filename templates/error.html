@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+{% extends "layout.html" %}
+{% block navbar %}
+
+    <div class="flex_container">
+        {% if hint %}
+            <p>{{ hint }}</p>
+        {% endif %}
+        {% if session.username  %}
+            <a href="/startpage" class="button">Return</a>
+        {% else %}
+            <a href="/logout" class="button">Return</a>
+        {% endif %}
+    </div>
+{% endblock %}

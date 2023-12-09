@@ -9,7 +9,7 @@ from flask import flash
 from sqlalchemy.sql import text
 from app import app
 import re
-
+import secrets
 
 @app.route("/")
 def index():
@@ -24,41 +24,43 @@ def login():
     user = db.session.execute(
         text("SELECT id, username, password FROM users WHERE username = :username"), {"username": username}).fetchone()
     if not user:
-        return "Username not found. <a href='/'>Try again</a>"
+        return render_template("error.html", username=username, hint="Username not found.")
 
     hash_value = user.password
     if check_password_hash(hash_value, password):
         session["username"] = username
+        session["csrf_token"] = secrets.token_hex(16)
+
         return redirect("/startpage")
 
     else:
-        return "Incorrect password. <a href='/'>Try again</a>"
+        return render_template("error.html", username=username, hint="Incorrect password.")
 
 
 @app.route("/logout")
 def logout():
-    del session["username"]
+    session.pop("username", None)
     return redirect("/")
 
 
 def validate(username, password): 
     if not username or not password:
-        return "Username and password are required"
+        return render_template("error.html", username=username, hint="Username and password required.")
     if not re.match("^[a-z]+$", username):
-        return "Please use only letters a-z for username. <a href='/register'>Try again</a>"
+        return render_template("error.html", hint="Please use only letters a-z for username.")
     if len(username) < 2:
-        return "Username too short. <a href='/register'>Try again</a>"
+        return render_template("error.html", hint="Username too short.")
     if len(password) < 6:
-        return "Password too short. <a href='/register'>Try again</a>"
+        return render_template("error.html", hint="Password too short.")
     if re.match("^[a-z]+$", password):
-        return "Password should contain other characters than letters. <a href='/register'>Try again</a>"
+        return render_template("error.html", hint="Password should contain other characters than letters.")
+
 
 
 @app.route("/register", methods=["POST", "GET"])
 def register():
     if request.method == "GET":
         return render_template("register.html")
-
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
@@ -69,7 +71,7 @@ def register():
         existing_user = db.session.execute(
             text("SELECT * FROM users WHERE username = :username"), {"username": username}).fetchone()
         if existing_user:
-            return "Username already exists. <a href='/register'>Try again</a>"
+            return render_template("error.html", username="username", hint="Username already exists.")
         hash_value = generate_password_hash(password)
 
         try:
@@ -80,7 +82,7 @@ def register():
             db.session.commit()
         except Exception as e:
             print(e)
-            return "Registration failed. <a href='/register'>Try again</a>"
+            return render_template("error.html", username="username", hint="Something went wrong.")
         session["username"] = username
         return redirect("/")
 def get_user_favorite_books(username):
@@ -89,7 +91,6 @@ def get_user_favorite_books(username):
     if not user_id:
         return []
 
-    # Fetch favorite books for the user
     sql = text("SELECT b.* FROM books b "
                "JOIN favourites f ON b.id = f.book_id "
                "WHERE f.user_id = :user_id")
@@ -101,7 +102,7 @@ def get_user_favorite_books(username):
 @app.route("/startpage")
 def startpage():
     if "username" not in session:
-        return "User not logged in. <a href='/'>Login</a>"
+        return render_template("error.html", username="username", hint="User not logged in.")
 
     username = session["username"]
     user_id = get_user_id(username)
@@ -120,14 +121,17 @@ def get_user_id(username):
 @app.route("/addreview/<bookname>")
 def addreview(bookname):
     if "username" not in session:
-        return "User not logged in. <a href='/'>Login</a>"
+        return render_template("error.html", username="username", hint="User not logged in.")
     return render_template("addreview.html", name=bookname)
 
 
 @app.route("/savedreview", methods=["POST"])
 def savedreview():
+    if session["csrf_token"] != request.form["csrf_token"]:
+        return render_template("error.html")
     if "username" not in session:
-        return "User not logged in. <a href='/'>Login</a>"
+        return render_template("error.html", username="username", hint="User not logged in.")
+    
     name = request.form["name"]
     status = request.form["status"]
     grade = request.form["grade"]
@@ -146,7 +150,7 @@ def savedreview():
     book = result_book.fetchone()
 
     if not book:
-        return "Book not found. Please add it to the database: <a href='/addbook'>Add book</a> or try again: <a href='/addreview'>Make review</a>"
+        return render_template("error.html", hint="Book not found. Please add it to the database or try again.") 
 
     try:
         query = text(
@@ -165,14 +169,14 @@ def savedreview():
 @app.route("/search")
 def search():
     if "username" not in session:
-        return "User not logged in. <a href='/'>Login</a>"
+        return render_template("error.html", username="username", hint="User not logged in.")
     return render_template("search.html")
 
 
 @app.route("/myreviews")
 def myreviews():
     if "username" not in session:
-        return "User not logged in. <a href='/'>Login</a>"
+        return render_template("error.html", username="username", hint="User not logged in.")
     user_reviews = get_user_reviews()
 
     if isinstance(user_reviews, str):
@@ -183,7 +187,7 @@ def myreviews():
 
 def get_user_reviews():
     if "username" not in session:
-        return "User not logged in. <a href='/'>Login</a>"
+        return render_template("error.html", username="username", hint="User not logged in.")
 
     username = session['username']
 
@@ -206,7 +210,7 @@ def get_user_reviews():
 
 def find_books():
     if "username" not in session:
-        return "User not logged in. <a href='/'>Login</a>"
+        return render_template("error.html", username="username", hint="User not logged in.")
 
     username = session['username']
 
@@ -222,7 +226,7 @@ def find_books():
     books = result_book.fetchall()
 
     if not books:
-        return "No reviews found. <a href='/startpage'>Back to main page</a>"
+        return render_template("error.html", username="username", hint="No reviews found.")
 
     return books
 
@@ -232,18 +236,21 @@ def find_books():
 def showbooks():
     username = session.get('username')
     if not username:
-        return "User not logged in. <a href='/'>Login</a>"
+        return render_template("error.html", username="username", hint="User not logged in.")
     if request.method == 'POST':
+        if session["csrf_token"] != request.form["csrf_token"]:
+            return "Something went wrong. <a href='/'>Try again</a>"
         user_id = get_user_id(username)
         if not user_id:
             return "User not found. <a href='/'>Login</a>"
         book_id = request.form.get('book_id')
         existing_favourite = check_existing_favourite(user_id, book_id)
         if existing_favourite:
-            return "Book already in favourite <a href='/startpage'>Back to main page</a"
+            return render_template("error.html", username="username", hint="Book already in favourites")
+
         try:
             add_book_to_favourites(user_id, book_id)
-            return "Book added to favourites successfully <a href='/startpage'>Back to main page</a"
+            return render_template("error.html", username="username", hint="Book added to favourites successfully")
         except Exception as e:
             return f"Error: {str(e)}"
     else:
@@ -251,7 +258,7 @@ def showbooks():
         found_books = search_books(query)
 
         if not found_books:
-            return "Book not found. Please add it to the database: <a href='/addbook'>Add book</a> or try search again: <a href='/search'>Search</a>"
+            return render_template("error.html", username="username", hint="Book not found. Please add it to the database or search again.")
 
         return render_template("showbooks.html", found_books=found_books)
 
@@ -281,20 +288,20 @@ def search_books(query):
 @app.route("/showusers")
 def showusers():
     if "username" not in session:
-        return "User not logged in. <a href='/'>Login</a>"
+        return render_template("error.html", username="username", hint="User not logged in.")
     query = request.args["query"]
     sql = text("SELECT username FROM users WHERE username LIKE :query")
     result = db.session.execute(sql, {"query": "%"+query+"%"})
     found_users = result.fetchall()
     if not found_users:
-        return "No users found. Try again: <a href='/search'>Search</a>"
+        return render_template("error.html", username="username", hint="No users found")
 
     return render_template("showusers.html", found_users=found_users)
 
 @app.route("/showfriends")
 def showfriends():
     if "username" not in session:
-        return "User not logged in. <a href='/'>Login</a>"
+        return render_template("error.html", username="username", hint="User not logged in.")
     user = session["username"] #ei toimi
     sql = text("SELECT DISTINCT user1 AS friend1, user2 AS friend2 "
         "FROM friends f1 WHERE (:user IN (f1.user1, f1.user2)) "
@@ -308,13 +315,13 @@ def showfriends():
     found_friends = result.fetchall()
     print(found_friends)
     if not found_friends:
-        return "No friends yet."
+        return render_template("error.html", hint="No friends yet.")
     return render_template("showfriends.html", found_friends=found_friends, session_user=user)
 
 @app.route("/userprofile/<username>", methods=['GET', 'POST'])
 def userprofile(username):
     if "username" not in session:
-        return "User not logged in. <a href='/'>Login</a>"
+        return render_template("error.html", username="username", hint="User not logged in.")
     query_user = text("SELECT * FROM users WHERE username = :username")
     result_user = db.session.execute(query_user, {"username": username})
     user = result_user.fetchone()
@@ -323,6 +330,8 @@ def userprofile(username):
     if not user:
         return "User not found. <a href='/startpage'>Back to main page</a>"
     if request.method == 'POST':
+        if session["csrf_token"] != request.form["csrf_token"]:
+            return render_template("error.html", username="username", hint="Invalid CSRF token.")
         connect = request.form.get('connect')
         viewed_user = request.form.get('viewed_user')
 
@@ -356,14 +365,16 @@ def userprofile(username):
 @app.route("/addbook")
 def addbook():
     if "username" not in session:
-        return "User not logged in. <a href='/'>Login</a>"
+        return render_template("error.html", username="username", hint="User not logged in.")
     return render_template("addbook.html")
 
 
 @app.route("/savedbook", methods=["POST"])
 def savedbook():
+    if session["csrf_token"] != request.form["csrf_token"]:
+        return render_template("error.html", username="username", hint="Invalid CSRF token.")
     if "username" not in session:
-        return "User not logged in. <a href='/'>Login</a>"
+        return render_template("error.html", username="username", hint="User not logged in.")
     bookname = request.form["bookname"]
     author = request.form["author"]
     year = request.form["year"]
@@ -379,7 +390,7 @@ def savedbook():
     result = db.session.execute(sql, {"bookname": bookname})
     any = len(result.fetchall())
     if any > 0:
-        return "Book already in database. <a href='/startpage'>Back to main page</a>"
+        return render_template("error.html", hint="Book already in database.")
     else:
         try:
             query = text(

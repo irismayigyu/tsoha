@@ -22,6 +22,8 @@
         {% for book in found_books %}
         <li>
             <form method="POST" action="{{ url_for('showbooks') }}">
+                <input type="hidden" name="csrf_token" value="{{ session['csrf_token'] }}">
+
                 <input type="hidden" name="book_id" value="{{ book.id }}">
                 Book: <a href="{{ url_for('addreview', bookname=book.bookname) }}">{{ book.bookname }}</a>
                 <br>

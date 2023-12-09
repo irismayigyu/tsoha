@@ -14,6 +14,7 @@
     <p><strong>Username:</strong> {{ user.username }}</p>
 
     <form method="post" >
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
         <input type="hidden" name="viewed_user" value="{{ user.username }}">
         Connect?: <br>
         <input type="radio" name="connect" value="yes"> yes

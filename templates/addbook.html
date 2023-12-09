@@ -7,6 +7,7 @@
 <h2>Add a book</h2>
 <br>
 <form action="/savedbook" method="POST">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
     <p>Book name:<br>
         <input type="text" name="bookname" maxlength="50" required>
     </p>

@@ -3,6 +3,7 @@
 {% extends "layout.html" %}
 {% block navbar %}
 <form action="/savedreview" method="POST">
+    <input type="hidden" name="csrf_token" value="{{ session['csrf_token'] }}">
     <h2>Add Review for {{ name }}</h2>
     <br>
     <input type="hidden" name="name" value="{{ name }}">

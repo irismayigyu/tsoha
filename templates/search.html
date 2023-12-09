@@ -8,6 +8,7 @@
 <br>
 <p> Search for a book:
 <form action="/showbooks" method="GET">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
     Search by title or author: <input type="text" name="query" required>
     <br>
     <input type="submit" value="Search">
@@ -17,6 +18,7 @@
 
 <br>
 <form action="/showusers" method="GET">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
     Search for a user: <input type="text" name="query" required>
     <br>
     <input type="submit" value="Search">

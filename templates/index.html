@@ -16,6 +16,7 @@
     Login
 <p>
 <form action="/login" method="POST">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
     <p>Username:<br>
         <input type="text" name="username" required>
     </p>
