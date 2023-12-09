@@ -14,10 +14,17 @@ disable=raw-checker-failed,
         use-symbolic-message-instead,
         missing-module-docstring,
         missing-function-docstring,
-        missing-class-docstring
+        missing-class-docstring,
+        import-error,
+        unused-import,
+        cyclic-import,
+        wrong-import-order,
+        wrong-import-position
 
 [FORMAT]
 
 [REFACTORING]
 
 [DESIGN]
+max-line-length=120
+max-returns=8
