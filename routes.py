@@ -292,12 +292,11 @@ def showfriends():
     if "username" not in session:
         return render_template("error.html", username="username", hint="User not logged in.")
     user = session["username"]  # ei toimi
-    sql = text("SELECT DISTINCT user1 AS friend1, user2 AS friend2 "
-               "FROM friends f1 WHERE (:user IN (f1.user1, f1.user2)) "
-               "AND EXISTS (SELECT 1 FROM friends f2 WHERE "
-               "(:user IN (f2.user1, f2.user2) AND "
-               "((f1.user1=f2.user1 AND f1.user2=f2.user2) OR "
-               "(f1.user1=f2.user2 AND f1.user2=f2.user1))))")
+    sql = text("""SELECT DISTINCT f1.user2
+               FROM friends f1, friends f2
+               WHERE f1.user1 = :user AND
+                     f1.user1 = f2.user2 AND
+                     f1.user2 = f2.user1;""")
 
     result = db.session.execute(sql, {"user": user})
 
