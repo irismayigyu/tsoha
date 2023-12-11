@@ -52,18 +52,8 @@ def register():
         username = request.form["username"]
         password = request.form["password"]
         validation = users.validate(username, password)
-        if validation=="error1":
-            return render_template("error.html", username=username, hint="Username and password required.")
-        elif validation=="error2":
-            return render_template("error.html", hint="Please use only letters a-z for username.")
-        elif validation=="error3":
-            return render_template("error.html", hint="Username too short..")
-        elif validation=="error4":
-            return render_template("error.html", hint="Password too short.")
-        elif validation=="error5":
-            return render_template("error.html", hint="Password should contain other characters than letters.")
-        elif validation=="error6":
-            return render_template("error.html", username="username", hint="Username already exists.")
+        if validation[0]==False:
+            return render_template("error.html", username=username, hint=validation[1])
         users.register(username, password)
         return redirect("/")
     return False
