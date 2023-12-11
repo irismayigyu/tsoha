@@ -5,21 +5,14 @@ MyBooks on sovellus, johon käyttäjä voi lisätä ja arvostella lukemiaan kirj
 
 # Toiminnallisuusideoita
 
-- Käyttäjä voi kirjautua sisään ja ulos sekä luoda uuden tunnuksen.
-- Käyttäjä voi antaa kirjalle arvion 1-10 asteelta, valita statuksen ja kirjoittaa arvioinnin kirjasta.
 - Käyttäjä voi poistaa oman arvostelunsa.
-- Käyttäjän "omat arvostelut" -sivulta löytyvat hänen arvostelunsa.
-- Käyttäjät voivat hakea ja lisätä kavereita ja kaverukset voivat nähdä toistensa arvostelut.
-- Käyttäjä voi etsiä kirjaa tietokannasta, jos hän ei löydä sitä kirjaa, hän voi itse lisätä sen tietokantaan.
-- Käyttäjä voi valita lempikirjansa ja tarkastella lempikirjojaan sekä poistaa kirjan lempikirjoistaan.
-- Käyttäjä voi nähdä arvostelunsa julkaisupäivän. 
 - Kirjalla olisi oma sivusto, jossa näkyy kaikki siitä kirjoitetut arvostelut.
 - Kaverit näkisivät feedillä toistensa uusimmat arvostelut.
-- Käyttäjä voisi nähdä mielekkäitä tilastoja lukemistaan kirjoista esim keskiarvo-arvosana hänen lukemilleen kirjoille.
-- Saman kirjan voi arvostella uudestaan (tai esim. muuttaa statusta) ja uusi arvostelu päivittyy vanhentuneen tilalle. (ei duplikaatteja)
+- Käyttäjä voisi nähdä mielekkäitä tilastoja lukemistaan kirjoista esim keskiarvo-arvosana hänen lukemilleen kirjoille. Tulevaisuudessa esim lukijan keskiarvo-arvosana fantasiakirjoille tms. 
 
 
 # Nykyinen toiminnallisuus
+
 - Käyttäjä voi kirjautua sisään ja ulos sekä luoda uuden tunnuksen.
 - Käyttäjä voi antaa kirjalle arvion 1-10 asteelta, valita statuksen ja kirjoittaa arvioinnin kirjasta.
 - Käyttäjän "omat arvostelut" -sivulta löytyvat hänen arvostelunsa.
@@ -28,6 +21,7 @@ MyBooks on sovellus, johon käyttäjä voi lisätä ja arvostella lukemiaan kirj
 - Käyttäjä voi valita lempikirjansa ja tarkastella lempikirjojaan.
 - Saman kirjan voi arvostella uudestaan (tai esim. muuttaa statusta) ja uusi arvostelu päivittyy vanhentuneen tilalle. (ei duplikaatteja)
 - Käyttäjä voi nähdä arvostelunsa julkaisupäivän. 
+- Käyttäjä voi poistaa kirjan lempikirjoistaan.
 
 # Käynnistysohjeet
 

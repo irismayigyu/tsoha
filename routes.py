@@ -229,16 +229,17 @@ def showbooks():
         user_id = get_user_id(username)
         if not user_id:
             return "User not found. <a href='/'>Login</a>"
+        fav = request.form.get('fav')
         book_id = request.form.get('book_id')
         existing_favourite = check_existing_favourite(user_id, book_id)
-        if existing_favourite:
-            return render_template("error.html", username="username", hint="Book already in favourites")
-
-        try:
+        if fav=="yes":
+            if existing_favourite:
+                return render_template("error.html", username="username", hint="Book already in favourites")
             add_book_to_favourites(user_id, book_id)
             return render_template("error.html", username="username", hint="Book added to favourites successfully")
-        except Exception:
-            return False
+        if fav=="no" and existing_favourite:
+            delete_book_from_favourites(user_id, book_id)
+
 
     query = request.args.get("query", "")
     found_books = search_books(query)
@@ -261,6 +262,12 @@ def check_existing_favourite(user_id, book_id):
 def add_book_to_favourites(user_id, book_id):
     query = text(
         "INSERT INTO favourites (user_id, book_id) VALUES (:user_id, :book_id)")
+    db.session.execute(query, {"user_id": user_id, "book_id": book_id})
+    db.session.commit()
+
+def delete_book_from_favourites(user_id, book_id):
+    query = text(
+        "DELETE from favourites WHERE user_id=:user_id AND book_id=:book_id")
     db.session.execute(query, {"user_id": user_id, "book_id": book_id})
     db.session.commit()
 
@@ -344,7 +351,6 @@ def userprofile(username):
             db.session.execute(
                 query, {"current_user": current_user, "viewed_user": viewed_user})
             db.session.commit()
-# tee nii et ei voi olla ittensä frendi.
     return render_template("userprofile.html", user=user)
 
 
