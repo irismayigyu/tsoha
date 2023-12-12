@@ -294,25 +294,68 @@ def showusers():
     return render_template("showusers.html", found_users=found_users)
 
 
+# @app.route("/showfriends")
+# def showfriends():
+#     friend_ids=[]
+#     if "username" not in session:
+#         return render_template("error.html", username="username", hint="User not logged in.")
+#     user = session["username"]  # ei toimi
+#     sql = text("""SELECT DISTINCT f1.user2
+#                FROM friends f1, friends f2
+#                WHERE f1.user1 = :user AND
+#                      f1.user1 = f2.user2 AND
+#                      f1.user2 = f2.user1;""")
+
+#     result = db.session.execute(sql, {"user": user})
+
+#     found_friends = result.fetchall()
+ 
+#     for friend in found_friends:
+#         friend_ids.append(get_user_id(friend))
+#     for friend_id in friend_ids:
+#         select review from reviews where friend=friend_id
+
+#     print(found_friends)
+#     if not found_friends:
+#         return render_template("error.html", hint="No friends yet.")
+#     return render_template("showfriends.html", found_friends=found_friends, session_user=user)
+
 @app.route("/showfriends")
 def showfriends():
     if "username" not in session:
         return render_template("error.html", username="username", hint="User not logged in.")
-    user = session["username"]  # ei toimi
-    sql = text("""SELECT DISTINCT f1.user2
-               FROM friends f1, friends f2
-               WHERE f1.user1 = :user AND
-                     f1.user1 = f2.user2 AND
-                     f1.user2 = f2.user1;""")
 
-    result = db.session.execute(sql, {"user": user})
+    user = session["username"]
+    
+    # Fetch the friend usernames
+    sql_friends = text("""SELECT DISTINCT f1.user2
+                   FROM friends f1, friends f2
+                   WHERE f1.user1 = :user AND
+                         f1.user1 = f2.user2 AND
+                         f1.user2 = f2.user1;""")
 
-    found_friends = result.fetchall()
-    print(found_friends)
+    result_friends = db.session.execute(sql_friends, {"user": user})
+    found_friends = result_friends.fetchall()
+
+    # Fetch reviews for each friend
+    friend_reviews = []
+
+    for friend in found_friends:
+        friend_id = get_user_id(friend[0])
+        if friend_id:
+            sql_reviews = text("""SELECT r.id, r.name, r.status, r.grade, r.review, r.review_date
+                                FROM reviews r
+                                WHERE r.user_id = :friend_id""")
+            result_reviews = db.session.execute(sql_reviews, {"friend_id": friend_id})
+            reviews = result_reviews.fetchall()
+            friend_reviews.append({"friend_username": friend[0], "reviews": reviews})
+
+    print(friend_reviews)
+
     if not found_friends:
         return render_template("error.html", hint="No friends yet.")
-    return render_template("showfriends.html", found_friends=found_friends, session_user=user)
-
+    
+    return render_template("showfriends.html", found_friends=friend_reviews, session_user=user)
 
 @app.route("/userprofile/<username>", methods=['GET', 'POST'])
 def userprofile(username):

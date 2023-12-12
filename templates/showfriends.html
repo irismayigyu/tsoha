@@ -19,11 +19,27 @@
 
     {% if found_friends %}
     <ul>
-        {% for friend in found_friends %}
-        <li>
-                <a href="{{ url_for('userprofile', username=friend[0]) }}">{{ friend[0] }}</a>
-            <hr>
-        </li>
+        {% for friend_info in found_friends %}
+            <li>
+                <p>Friend: <a href="{{ url_for('userprofile', username=friend_info.friend_username) }}">{{ friend_info.friend_username }}</a></p>
+                {% if friend_info.reviews %}
+                    <ul>
+                        {% for review in friend_info.reviews %}
+                            <li>
+                                <p>Book: {{ review.name }}</p>
+                                <p>Status: {{ review.status }}</p>
+                                <p>Grade: {{ review.grade }}</p>
+                                <p>Review: {{ review.review }}</p>
+                                <p>Review Date: {{ review.review_date }}</p>
+                                <hr>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No reviews for this friend.</p>
+                {% endif %}
+                <hr>
+            </li>
         {% endfor %}
     </ul>
     {% else %}
