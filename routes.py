@@ -9,8 +9,9 @@ from app import app
 import re
 import secrets
 import users
+import books
 from datetime import datetime
-
+from users import check_user_exists as users_check_user_exists
 
 @app.route("/")
 def index():
@@ -43,7 +44,6 @@ def logout():
 
 
 
-
 @app.route("/register", methods=["POST", "GET"])
 def register():
     if request.method == "GET":
@@ -61,16 +61,9 @@ def register():
 
 def get_user_favorite_books(username):
     user_id = get_user_id(username)
-
     if not user_id:
         return []
-
-    sql = text("SELECT b.* FROM books b "
-               "JOIN favourites f ON b.id = f.book_id "
-               "WHERE f.user_id = :user_id")
-    result = db.session.execute(sql, {"user_id": user_id})
-    fav_books = result.fetchall()
-
+    fav_books=books.get_user_favorite_books(username)
     return fav_books
 
 
@@ -80,16 +73,18 @@ def startpage():
         return render_template("error.html", username="username", hint="User not logged in.")
 
     username = session["username"]
+
+    user_id = get_user_id(username)
+    if not user_id:
+        return render_template("error.html", username="username", hint="User not found.")
     fav_books = get_user_favorite_books(username)
     return render_template("startpage.html", fav_books=fav_books)
 
 
 def get_user_id(username):
-    sql_user = text("SELECT id FROM users WHERE username=:username")
-    result_user = db.session.execute(sql_user, {"username": username})
-    user = result_user.fetchone()
+    id=users.get_user_id(username)
+    return id
 
-    return user.id if user else None
 
 
 @app.route("/addreview/<bookname>")
@@ -99,10 +94,8 @@ def addreview(bookname):
     review_date = datetime.now().strftime("%Y-%m-%d")
     return render_template("addreview.html", name=bookname, review_date=review_date)
 
-
 def check_user_exists(username):
-    user = db.session.execute(
-        text("SELECT * FROM users WHERE username = :username"), {"username": username}).fetchone()
+    user = users_check_user_exists(username)
     if not user:
         return render_template("error.html", username="username", hint="User not found.")
     return user
@@ -123,22 +116,14 @@ def savedreview():
 
     username = session['username']
     user = check_user_exists(username)
-    query_book = text("SELECT * FROM books WHERE bookname = :name")
-    result_book = db.session.execute(query_book, {"name": name})
-    book = result_book.fetchone()
+
+    book=books.query_books(name)
 
     if not book:
         return render_template("error.html", hint="Book not found. Please add it to the database or try again.")
 
     try:
-        query = text(
-            "INSERT INTO reviews (user_id, book_id, name, status, grade, review, review_date)"
-            " VALUES (:user_id, :book_id, :name, :status, :grade, :review, :review_date)"
-            " ON CONFLICT (user_id, book_id) DO UPDATE"
-            " SET name = :name, status = :status, grade = :grade, review = :review, review_date = :review_date")
-        db.session.execute(query, {"user_id": user.id, "book_id": book.id, "name": name,
-                                "status": status, "grade": grade, "review": review, "review_date": review_date})
-        db.session.commit()
+        books.add_book(user, book, name, status, grade, review, review_date)
         return render_template("savedreview.html", name=name, status=status, grade=grade, review=review, review_date=review_date)
         
 
@@ -150,6 +135,10 @@ def savedreview():
 def search():
     if "username" not in session:
         return render_template("error.html", username="username", hint="User not logged in.")
+    username = session['username']
+    user_id = get_user_id(username)
+    if not user_id:
+        return render_template("error.html", username="username", hint="User not found.")
     return render_template("search.html")
 
 
@@ -160,7 +149,7 @@ def myreviews():
     username = session['username']
     user_id = get_user_id(username)
     if not user_id:
-        return "User not found. <a href='/'>Login</a>"
+        return render_template("error.html", username="username", hint="User not found.")
     user_reviews = get_user_reviews()
 
     if isinstance(user_reviews, str):
@@ -192,28 +181,12 @@ def get_user_reviews():
 def find_books():
     if "username" not in session:
         return render_template("error.html", username="username", hint="User not logged in.")
-
     username = session['username']
-
-    # query_user = text(
-    #     "SELECT id, username, password FROM users WHERE username = :username")
-    # result_user = db.session.execute(query_user, {"username": username})
-    # user = result_user.fetchone()
-
-    # if not user:
-    #     return "User not found. <a href='/register'>Register</a>"
-
     user = check_user_exists(username)
     if user:
-        #query = request.args["query"]
-        query_book = text(
-            "SELECT * FROM books WHERE WHERE content LIKE :query")
-        result_book = db.session.execute(query_book, {"user_id": user.id})
-        books = result_book.fetchall()
-
+        books=books.find_books()
         if not books:
             return render_template("error.html", username="username", hint="No books found.")
-
         return books
     return False
 
@@ -228,7 +201,7 @@ def showbooks():
             return "Something went wrong. <a href='/'>Try again</a>"
         user_id = get_user_id(username)
         if not user_id:
-            return "User not found. <a href='/'>Login</a>"
+            return render_template("error.html", username="username", hint="User not found.")
         fav = request.form.get('fav')
         book_id = request.form.get('book_id')
         existing_favourite = check_existing_favourite(user_id, book_id)
@@ -251,32 +224,37 @@ def showbooks():
 
 
 def check_existing_favourite(user_id, book_id):
-    sql = text(
-        "SELECT id FROM favourites WHERE user_id=:user_id AND book_id=:book_id")
-    existing_favourite = db.session.execute(
-        sql, {"user_id": user_id, "book_id": book_id}).scalar()
+    existing_favourite=books.check_existing_favourite(user_id, book_id)
+    return existing_favourite
+    # sql = text(
+    #     "SELECT id FROM favourites WHERE user_id=:user_id AND book_id=:book_id")
+    # existing_favourite = db.session.execute(
+    #     sql, {"user_id": user_id, "book_id": book_id}).scalar()
 
-    return existing_favourite is not None
+    # return existing_favourite is not None
 
 
 def add_book_to_favourites(user_id, book_id):
-    query = text(
-        "INSERT INTO favourites (user_id, book_id) VALUES (:user_id, :book_id)")
-    db.session.execute(query, {"user_id": user_id, "book_id": book_id})
-    db.session.commit()
+    books.add_book_to_favourites(user_id, book_id)
+    # query = text(
+    #     "INSERT INTO favourites (user_id, book_id) VALUES (:user_id, :book_id)")
+    # db.session.execute(query, {"user_id": user_id, "book_id": book_id})
+    # db.session.commit()
 
 def delete_book_from_favourites(user_id, book_id):
-    query = text(
-        "DELETE from favourites WHERE user_id=:user_id AND book_id=:book_id")
-    db.session.execute(query, {"user_id": user_id, "book_id": book_id})
-    db.session.commit()
+    # query = text(
+    #     "DELETE from favourites WHERE user_id=:user_id AND book_id=:book_id")
+    # db.session.execute(query, {"user_id": user_id, "book_id": book_id})
+    # db.session.commit()
+    books.delete_book_from_favourites(user_id, book_id)
 
 
 def search_books(query):
-    sql = text(
-        "SELECT * FROM books WHERE bookname LIKE :query OR author LIKE :query")
-    result = db.session.execute(sql, {"query": "%" + query + "%"})
-    found_books = result.fetchall()
+    found_books=books.search_books(query)
+    # sql = text(
+    #     "SELECT * FROM books WHERE bookname LIKE :query OR author LIKE :query")
+    # result = db.session.execute(sql, {"query": "%" + query + "%"})
+    # found_books = result.fetchall()
     return found_books
 
 
@@ -294,39 +272,16 @@ def showusers():
     return render_template("showusers.html", found_users=found_users)
 
 
-# @app.route("/showfriends")
-# def showfriends():
-#     friend_ids=[]
-#     if "username" not in session:
-#         return render_template("error.html", username="username", hint="User not logged in.")
-#     user = session["username"]  # ei toimi
-#     sql = text("""SELECT DISTINCT f1.user2
-#                FROM friends f1, friends f2
-#                WHERE f1.user1 = :user AND
-#                      f1.user1 = f2.user2 AND
-#                      f1.user2 = f2.user1;""")
-
-#     result = db.session.execute(sql, {"user": user})
-
-#     found_friends = result.fetchall()
- 
-#     for friend in found_friends:
-#         friend_ids.append(get_user_id(friend))
-#     for friend_id in friend_ids:
-#         select review from reviews where friend=friend_id
-
-#     print(found_friends)
-#     if not found_friends:
-#         return render_template("error.html", hint="No friends yet.")
-#     return render_template("showfriends.html", found_friends=found_friends, session_user=user)
-
 @app.route("/showfriends")
 def showfriends():
     if "username" not in session:
         return render_template("error.html", username="username", hint="User not logged in.")
 
     user = session["username"]
-    
+    username = session['username']
+    user_id = get_user_id(username)
+    if not user_id:
+        return render_template("error.html", username="username", hint="User not found.")
     # Fetch the friend usernames
     sql_friends = text("""SELECT DISTINCT f1.user2
                    FROM friends f1, friends f2
@@ -367,7 +322,7 @@ def userprofile(username):
 
     current_user = session["username"]
     if not user:
-        return "User not found. <a href='/startpage'>Back to main page</a>"
+        return render_template("error.html", username="username", hint="User not found.")
     if request.method == 'POST':
         connect = request.form.get('connect')
         viewed_user = request.form.get('viewed_user')
@@ -422,7 +377,7 @@ def savedbook():
     user = result_user.fetchone()
 
     if not user:
-        return "User not found."
+        return render_template("error.html", username="username", hint="User not found.")
     sql = text("SELECT * FROM books WHERE bookname=:bookname")
     result = db.session.execute(sql, {"bookname": bookname})
     found = len(result.fetchall())

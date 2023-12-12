@@ -60,3 +60,16 @@ def register(username, password):
         return "Something went wrong"
     session["username"] = username
     return True
+
+
+def get_user_id(username):
+    sql_user = text("SELECT id FROM users WHERE username=:username")
+    result_user = db.session.execute(sql_user, {"username": username})
+    user = result_user.fetchone()
+
+    return user.id if user else None
+
+def check_user_exists(username):
+    user = db.session.execute(
+        text("SELECT * FROM users WHERE username = :username"), {"username": username}).fetchone()
+    return user
