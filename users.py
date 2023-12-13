@@ -69,7 +69,57 @@ def get_user_id(username):
 
     return user.id if user else None
 
-def check_user_exists(username):
+def select_user(username):
     user = db.session.execute(
         text("SELECT * FROM users WHERE username = :username"), {"username": username}).fetchone()
     return user
+
+
+def showusers(query):
+    sql = text("SELECT username FROM users WHERE username LIKE :query")
+    result = db.session.execute(sql, {"query": "%"+query+"%"})
+    found_users = result.fetchall()
+    return found_users
+
+def foundfriends(user):
+    sql_friends = text("""SELECT DISTINCT f1.user2
+                   FROM friends f1, friends f2
+                   WHERE f1.user1 = :user AND
+                         f1.user1 = f2.user2 AND
+                         f1.user2 = f2.user1;""")
+
+    result_friends = db.session.execute(sql_friends, {"user": user})
+    found_friends = result_friends.fetchall()
+    return found_friends
+    
+def foundreviews(friend_id):
+    sql_reviews = text("""SELECT r.id, r.name, r.status, r.grade, r.review, r.review_date
+                        FROM reviews r
+                        WHERE r.user_id = :friend_id""")
+    result_reviews = db.session.execute(sql_reviews, {"friend_id": friend_id})
+    reviews = result_reviews.fetchall()
+    return reviews
+
+def check_friends(current_user, viewed_user):
+    sql = text(
+        "SELECT * FROM friends WHERE user1=:current_user AND user2=:viewed_user")
+    result = db.session.execute(
+        sql, {"current_user": current_user, "viewed_user": viewed_user})
+    any = len(result.fetchall())
+    return any
+
+
+
+def add_connection(current_user, viewed_user):
+    query = text(
+        "INSERT INTO friends (user1, user2) VALUES (:current_user, :viewed_user)")
+    db.session.execute(
+        query, {"current_user": current_user, "viewed_user": viewed_user})
+    db.session.commit()
+    
+def delete_connection(current_user, viewed_user):
+    query = text(
+        "DELETE FROM friends WHERE user1=:current_user AND user2=:viewed_user")
+    db.session.execute(
+        query, {"current_user": current_user, "viewed_user": viewed_user})
+    db.session.commit()

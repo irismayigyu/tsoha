@@ -20,6 +20,18 @@ def get_user_favorite_books(username):
 
     return fav_books
 
+def insert_book(bookname, author, year):
+    query = text(
+        "INSERT INTO books (bookname, author, year) VALUES (:bookname, :author, :year)")
+    db.session.execute(query, {"bookname": bookname,
+                                "author": author, "year": year})
+    db.session.commit()
+    
+def found_books(bookname):
+    sql = text("SELECT * FROM books WHERE bookname=:bookname")
+    result = db.session.execute(sql, {"bookname": bookname})
+    found = len(result.fetchall())
+    return found
 
 def find_books():
     username = session['username']

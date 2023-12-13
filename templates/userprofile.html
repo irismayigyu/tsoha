@@ -9,7 +9,7 @@
     <p><strong>Username:</strong> {{ user.username }}</p>
     <br>
     You can connect with other MyBooks users, if they have also connected with you, you will see each others reviews. 
-    You can choose no if you want to delete a connection.
+    You can choose no if you want to remove a connection.
     <br>
     <p><strong>Username:</strong> {{ user.username }}</p>
 
@@ -17,8 +17,8 @@
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
         <input type="hidden" name="viewed_user" value="{{ user.username }}">
         Connect?: <br>
-        <input type="radio" name="connect" value="yes"> yes
-        <input type="radio" name="connect" value="no"> no
+        <input type="radio" name="connect" value="yes"> Yes
+        <input type="radio" name="connect" value="no"> Remove connection
         <br>
         <br>
         <button type="submit">Submit</button>
