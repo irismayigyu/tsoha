@@ -4,9 +4,7 @@ from flask import redirect, render_template, request, session, Flask, flash
 from os import getenv
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_sqlalchemy import SQLAlchemy
-# from sqlalchemy.sql import text
 from app import app
-import re
 import secrets
 import users
 import books
@@ -89,7 +87,7 @@ def addreview(bookname):
 
 
 def check_user_exists(username):
-    user = users.users_select_user(username)
+    user = users_select_user(username)
     if not user:
         return render_template("error.html", username="username", hint="User not found.")
     return user
@@ -144,11 +142,12 @@ def myreviews():
     if not user_id:
         return render_template("error.html", username="username", hint="User not found.")
     user_reviews = get_user_reviews()
-
+    review_average= books.get_rev_avg(user_id)
+    count= books.get_rev_count(user_id)
     if isinstance(user_reviews, str):
         return render_template("myreviews.html", error_message=user_reviews)
 
-    return render_template("myreviews.html", user_reviews=user_reviews)
+    return render_template("myreviews.html", user_reviews=user_reviews, review_average=review_average, count=count)
 
 
 def get_user_reviews():
@@ -160,7 +159,7 @@ def get_user_reviews():
 
     if not user:
         return redirect("/")
-    user_reviews = users.user_reviews()
+    user_reviews = users.user_reviews(user)
 
     if not user_reviews:
         return "No reviews found."

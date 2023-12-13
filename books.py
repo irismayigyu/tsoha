@@ -26,7 +26,7 @@ def insert_book(bookname, author, year):
     db.session.execute(query, {"bookname": bookname,
                                 "author": author, "year": year})
     db.session.commit()
-    
+
 def found_books(bookname):
     sql = text("SELECT * FROM books WHERE bookname=:bookname")
     result = db.session.execute(sql, {"bookname": bookname})
@@ -86,3 +86,19 @@ def search_books(query):
     result = db.session.execute(sql, {"query": "%" + query + "%"})
     found_books = result.fetchall()
     return found_books
+
+def get_rev_avg(user_id):
+    sql = text("SELECT ROUND(AVG(grade), 2) FROM reviews WHERE user_id=:user_id")
+    average_grade = db.session.execute(sql, {"user_id": user_id}).scalar()
+    return average_grade
+
+def get_rev_count(user_id):
+    sql = text("SELECT COUNT(book_id) FROM reviews WHERE user_id=:user_id")
+    count = db.session.execute(sql, {"user_id": user_id}).scalar()
+    return count
+
+def delete_review(user_id, book_id):
+    query = text(
+        "DELETE from reviews WHERE user_id=:user_id AND book_id=:book_id")
+    db.session.execute(query, {"user_id": user_id, "book_id": book_id})
+    db.session.commit()

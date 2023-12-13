@@ -1,16 +1,18 @@
 
 # Kirjalistasovellus
 
-MyBooks on sovellus, johon käyttäjä voi lisätä ja arvostella lukemiaan kirjoja. Sovellus on alustavasti omaan käyttöön ja toimii ns digitaalisena "kirjapäiväkirjana". Tulevaisuudessa sovellusta voisi laajentaa niin että profiili voisi olla julkinen ja käyttäjät voisivat nähdä toistensa arvosteluja. Tällä hetkellä myös kaverukset voivat lisätä toisensa ja näin nähdä toistensa arvostelut.
+MyBooks on sovellus, johon käyttäjä voi lisätä ja arvostella lukemiaan kirjoja. Sovellus on alustavasti omaan käyttöön ja toimii ns digitaalisena "kirjapäiväkirjana". Tulevaisuudessa sovellusta voisi laajentaa niin että profiili voisi olla julkinen ja käyttäjät voisivat nähdä toistensa arvosteluja. Tällä hetkellä kaverukset voivat nähdä toistensa arvostelut.
 
 # Toiminnallisuusideoita
 
-- Käyttäjä voi poistaa oman arvostelunsa.
+- Tulevaisuudessa sovellusta voisi laajentaa niin että profiili voisi olla julkinen ja käyttäjät voisivat nähdä toistensa julkisia arvosteluja. 
 - Kirjalla olisi oma sivusto, jossa näkyy kaikki siitä kirjoitetut arvostelut.
-- Käyttäjä voisi nähdä mielekkäitä tilastoja lukemistaan kirjoista esim keskiarvo-arvosana hänen lukemilleen kirjoille. Tulevaisuudessa esim lukijan keskiarvo-arvosana fantasiakirjoille tms. 
-- Kuva
-- 
+- Voisi myös kirjata ylös kirjan genren tai muita tietoja.
+- Näistä tiedoista voisi tehdä kiinnostavia tilastoja esim. lukijan keskiarvo-arvosana fantasiakirjoille tai montako prosenttia lukijan lukemista kirjoist ovat olleet trillereitä
 
+- Kuva
+- Käyttäjä voi poistaa oman arvostelunsa.
+- käyttäjä voi nähdä montako arvostelua on
 
 # Nykyinen toiminnallisuus
 
@@ -26,6 +28,8 @@ MyBooks on sovellus, johon käyttäjä voi lisätä ja arvostella lukemiaan kirj
 - Saman kirjan voi arvostella uudestaan (tai esim. muuttaa statusta) ja uusi arvostelu päivittyy vanhentuneen tilalle.
 - Käyttäjä voi nähdä arvostelunsa julkaisupäivän. 
 - Käyttäjä voi poistaa kirjan lempikirjoistaan.
+- Etusivulla on kuva.
+- Käyttäjä voi nähdä arvosteluidensa keskiarvo-arvosanan.
 
 # Käynnistysohjeet
 

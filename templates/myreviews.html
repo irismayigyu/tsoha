@@ -13,7 +13,10 @@
     <h2>My Reviews</h2>
 </head>
 <br>
+We found this many reviews for you: {{ count }}
+<br>
 <body>
+
 <p></p>
     {% if user_reviews %}
     <ul>
@@ -31,7 +34,11 @@
     {% else %}
     <p>{{ error_message }}</p>
     {% endif %}
-
+    {% if user_reviews %}
+        Average grade of books reviewed by you: {{ review_average }}
+        {% endif %}
+    <br>
+    <br>
     <a href="/startpage">Back to startpage</a>
 </body>
 
