@@ -133,7 +133,7 @@ def search():
     return render_template("search.html")
 
 
-@app.route("/myreviews")
+@app.route("/myreviews", methods=["GET", "POST"])
 def myreviews():
     if "username" not in session:
         return render_template("error.html", username="username", hint="User not logged in.")
@@ -141,6 +141,14 @@ def myreviews():
     user_id = users.get_user_id(username)
     if not user_id:
         return render_template("error.html", username="username", hint="User not found.")
+    if request.method == 'POST':
+        if session["csrf_token"] != request.form["csrf_token"]:
+            return render_template("error.html", username="username", hint="Something went wrong..")
+        review_id = request.form.get('review_id')
+        books.delete_review(user_id, review_id)
+        return render_template("error.html", username="username", hint="Review has been deleted")
+            
+
     user_reviews = get_user_reviews()
     review_average= books.get_rev_avg(user_id)
     count= books.get_rev_count(user_id)

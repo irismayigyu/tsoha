@@ -73,11 +73,6 @@ def add_book_to_favourites(user_id, book_id):
     db.session.execute(query, {"user_id": user_id, "book_id": book_id})
     db.session.commit()
 
-def delete_book_from_favourites(user_id, book_id):
-    query = text(
-        "DELETE from favourites WHERE user_id=:user_id AND book_id=:book_id")
-    db.session.execute(query, {"user_id": user_id, "book_id": book_id})
-    db.session.commit()
 
 
 def search_books(query):
@@ -97,8 +92,15 @@ def get_rev_count(user_id):
     count = db.session.execute(sql, {"user_id": user_id}).scalar()
     return count
 
-def delete_review(user_id, book_id):
+def delete_review(user_id, review_id):
+    query = text("DELETE FROM reviews WHERE user_id = :user_id AND id = :review_id")
+    db.session.execute(query, {"user_id": user_id, "review_id": review_id})
+    db.session.commit()
+
+
+
+def delete_book_from_favourites(user_id, book_id):
     query = text(
-        "DELETE from reviews WHERE user_id=:user_id AND book_id=:book_id")
+        "DELETE from favourites WHERE user_id=:user_id AND book_id=:book_id")
     db.session.execute(query, {"user_id": user_id, "book_id": book_id})
     db.session.commit()

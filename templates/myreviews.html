@@ -13,8 +13,11 @@
     <h2>My Reviews</h2>
 </head>
 <br>
-We found this many reviews for you: {{ count }}
+{% if count %}
 <br>
+    We found this many reviews for you: {{ count }}
+    <br>
+    {% endif %}
 <body>
 
 <p></p>
@@ -27,6 +30,14 @@ We found this many reviews for you: {{ count }}
             <strong>Grade:</strong> {{ re.grade }}<br>
             <strong>Review:</strong> {{ re.review }}<br>
             <strong>Date:</strong> {{ re.review_date }}<br>
+            <form method="POST" action="{{ url_for('myreviews') }}">
+                <input type="hidden" name="csrf_token" value="{{ session['csrf_token'] }}">
+                <input type="hidden" name="review_id" value="{{ re.id }}">
+                Favourite? <br>
+                <!-- <input type="radio" name="delete" value="yes"> Delete review
+                <button type="submit">Submit</button> -->
+                <button type="submit">Delete review</button>
+            </form>
             <hr>
         </li>
         {% endfor %}
@@ -37,7 +48,6 @@ We found this many reviews for you: {{ count }}
     {% if user_reviews %}
         Average grade of books reviewed by you: {{ review_average }}
         {% endif %}
-    <br>
     <br>
     <a href="/startpage">Back to startpage</a>
 </body>

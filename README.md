@@ -29,7 +29,7 @@ MyBooks on sovellus, johon käyttäjä voi lisätä ja arvostella lukemiaan kirj
 - Käyttäjä voi nähdä arvostelunsa julkaisupäivän. 
 - Käyttäjä voi poistaa kirjan lempikirjoistaan.
 - Etusivulla on kuva.
-- Käyttäjä voi nähdä arvosteluidensa keskiarvo-arvosanan.
+- Käyttäjä voi nähdä arvosteluidensa keskiarvo-arvosanan sekä lukumäärän.
 
 # Käynnistysohjeet
 
