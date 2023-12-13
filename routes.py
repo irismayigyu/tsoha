@@ -4,7 +4,7 @@ from flask import redirect, render_template, request, session, Flask, flash
 from os import getenv
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.sql import text
+# from sqlalchemy.sql import text
 from app import app
 import re
 import secrets
@@ -59,7 +59,7 @@ def register():
 
 
 def get_user_favorite_books(username):
-    user_id = get_user_id(username)
+    user_id = users.get_user_id(username)
     if not user_id:
         return []
     fav_books = books.get_user_favorite_books(username)
@@ -73,16 +73,11 @@ def startpage():
 
     username = session["username"]
 
-    user_id = get_user_id(username)
+    user_id = users.get_user_id(username)
     if not user_id:
         return render_template("error.html", username="username", hint="User not found.")
     fav_books = get_user_favorite_books(username)
     return render_template("startpage.html", fav_books=fav_books)
-
-
-def get_user_id(username):
-    id = users.get_user_id(username)
-    return id
 
 
 @app.route("/addreview/<bookname>")
@@ -94,7 +89,7 @@ def addreview(bookname):
 
 
 def check_user_exists(username):
-    user = users_select_user(username)
+    user = users.users_select_user(username)
     if not user:
         return render_template("error.html", username="username", hint="User not found.")
     return user
@@ -134,7 +129,7 @@ def search():
     if "username" not in session:
         return render_template("error.html", username="username", hint="User not logged in.")
     username = session['username']
-    user_id = get_user_id(username)
+    user_id = users.get_user_id(username)
     if not user_id:
         return render_template("error.html", username="username", hint="User not found.")
     return render_template("search.html")
@@ -145,7 +140,7 @@ def myreviews():
     if "username" not in session:
         return render_template("error.html", username="username", hint="User not logged in.")
     username = session['username']
-    user_id = get_user_id(username)
+    user_id = users.get_user_id(username)
     if not user_id:
         return render_template("error.html", username="username", hint="User not found.")
     user_reviews = get_user_reviews()
@@ -165,10 +160,7 @@ def get_user_reviews():
 
     if not user:
         return redirect("/")
-
-    query_reviews = text("SELECT * FROM reviews WHERE user_id = :user_id")
-    result_reviews = db.session.execute(query_reviews, {"user_id": user.id})
-    user_reviews = result_reviews.fetchall()
+    user_reviews = users.user_reviews()
 
     if not user_reviews:
         return "No reviews found."
@@ -197,7 +189,7 @@ def showbooks():
     if request.method == 'POST':
         if session["csrf_token"] != request.form["csrf_token"]:
             return render_template("error.html", username="username", hint="Something went wrong..")
-        user_id = get_user_id(username)
+        user_id = users.get_user_id(username)
         if not user_id:
             return render_template("error.html", username="username", hint="User not found.")
         fav = request.form.get('fav')
@@ -242,7 +234,7 @@ def showfriends():
 
     user = session["username"]
     username = session['username']
-    user_id = get_user_id(username)
+    user_id = users.get_user_id(username)
     if not user_id:
         return render_template("error.html", username="username", hint="User not found.")
     found_friends = users.foundfriends(user)
@@ -250,7 +242,7 @@ def showfriends():
     friend_reviews = []
 
     for friend in found_friends:
-        friend_id = get_user_id(friend[0])
+        friend_id = users.get_user_id(friend[0])
         if friend_id:
             reviews = users.foundreviews(friend_id)
             friend_reviews.append(

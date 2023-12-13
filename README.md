@@ -8,6 +8,8 @@ MyBooks on sovellus, johon käyttäjä voi lisätä ja arvostella lukemiaan kirj
 - Käyttäjä voi poistaa oman arvostelunsa.
 - Kirjalla olisi oma sivusto, jossa näkyy kaikki siitä kirjoitetut arvostelut.
 - Käyttäjä voisi nähdä mielekkäitä tilastoja lukemistaan kirjoista esim keskiarvo-arvosana hänen lukemilleen kirjoille. Tulevaisuudessa esim lukijan keskiarvo-arvosana fantasiakirjoille tms. 
+- Kuva
+- 
 
 
 # Nykyinen toiminnallisuus
@@ -15,10 +17,13 @@ MyBooks on sovellus, johon käyttäjä voi lisätä ja arvostella lukemiaan kirj
 - Käyttäjä voi kirjautua sisään ja ulos sekä luoda uuden tunnuksen.
 - Käyttäjä voi antaa kirjalle arvion 1-10 asteelta, valita statuksen ja kirjoittaa arvioinnin kirjasta.
 - Käyttäjän "omat arvostelut" -sivulta löytyvat hänen arvostelunsa.
-- Käyttäjä voi etsiä kirjaa tietokannasta, jos hän ei löydä sitä kirjaa, hän voi itse lisätä sen tietokantaan.
-- Käyttäjät voivat hakea ja lisätä kavereita ja kaverukset voivat nähdä toistensa arvostelut. Käyttäjistä tulee kaveruksia vain jos molemmat ovat 'connectenneet'
-- Käyttäjä voi valita lempikirjansa ja tarkastella lempikirjojaan.
-- Saman kirjan voi arvostella uudestaan (tai esim. muuttaa statusta) ja uusi arvostelu päivittyy vanhentuneen tilalle. (ei duplikaatteja)
+- Käyttäjä voi etsiä kirjaa tietokannasta,
+- Käyttäjä voi itse lisätä lukemiaan kirjoja tietokantaan.
+- Käyttäjät voivat hakea ja lisätä kavereita
+- Käyttäjistä tulee kaveruksia kun molemmat ovat 'connectanneet'.
+- Kaverukset voivat nähdä toistensa arvostelut. 
+- Käyttäjä voi valita lempikirjoja ja nähdä ne etusivullaan.
+- Saman kirjan voi arvostella uudestaan (tai esim. muuttaa statusta) ja uusi arvostelu päivittyy vanhentuneen tilalle.
 - Käyttäjä voi nähdä arvostelunsa julkaisupäivän. 
 - Käyttäjä voi poistaa kirjan lempikirjoistaan.
 

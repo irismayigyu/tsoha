@@ -123,3 +123,9 @@ def delete_connection(current_user, viewed_user):
     db.session.execute(
         query, {"current_user": current_user, "viewed_user": viewed_user})
     db.session.commit()
+
+def user_reviews():
+    query_reviews = text("SELECT * FROM reviews WHERE user_id = :user_id")
+    result_reviews = db.session.execute(query_reviews, {"user_id": user.id})
+    user_reviews = result_reviews.fetchall()
+    return user_reviews
