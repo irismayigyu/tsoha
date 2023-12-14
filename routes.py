@@ -38,7 +38,7 @@ def login():
 @app.route("/logout")
 def logout():
     users.logout()
-    return redirect("/")
+    return redirect("/register")
 
 
 @app.route("/register", methods=["POST", "GET"])
@@ -49,7 +49,7 @@ def register():
         username = request.form["username"]
         password = request.form["password"]
         validation = users.validate(username, password)
-        if validation[0] == False:
+        if validation[0] is False:
             return render_template("error.html", username=username, hint=validation[1])
         users.register(username, password)
         return redirect("/")
@@ -64,7 +64,7 @@ def get_user_favorite_books(username):
     return fav_books
 
 
-@app.route("/startpage")
+@app.route("/startpage", methods=["POST", "GET"])
 def startpage():
     if "username" not in session:
         return render_template("error.html", username="username", hint="User not logged in.")
@@ -75,6 +75,19 @@ def startpage():
     if not user_id:
         return render_template("error.html", username="username", hint="User not found.")
     fav_books = get_user_favorite_books(username)
+    if request.method == 'POST':
+        if session["csrf_token"] != request.form["csrf_token"]:
+            return render_template("error.html", username="username", hint="Something went wrong..")
+        user_id = users.get_user_id(username)
+        if not user_id:
+            return render_template("error.html", username="username", hint="User not found.")
+        book_id = request.form.get('book_id')
+        existing_favourite = books.check_existing_favourite(user_id, book_id)
+        if existing_favourite:
+            books.delete_book_from_favourites(user_id, book_id)
+            return render_template("error.html", username="username", hint="Book removed from favourites")
+        if not existing_favourite:
+            return render_template("error.html", username="username", hint="Book is not in favourites")
     return render_template("startpage.html", fav_books=fav_books)
 
 
@@ -147,11 +160,10 @@ def myreviews():
         review_id = request.form.get('review_id')
         books.delete_review(user_id, review_id)
         return render_template("error.html", username="username", hint="Review has been deleted")
-            
 
     user_reviews = get_user_reviews()
-    review_average= books.get_rev_avg(user_id)
-    count= books.get_rev_count(user_id)
+    review_average = books.get_rev_avg(user_id)
+    count = books.get_rev_count(user_id)
     if isinstance(user_reviews, str):
         return render_template("myreviews.html", error_message=user_reviews)
 
@@ -167,7 +179,7 @@ def get_user_reviews():
 
     if not user:
         return redirect("/")
-    user_reviews = users.user_reviews(user)
+    user_reviews = users.select_user_reviews(user)
 
     if not user_reviews:
         return "No reviews found."
@@ -181,10 +193,10 @@ def find_books():
     username = session['username']
     user = check_user_exists(username)
     if user:
-        books = books.find_books()
-        if not books:
+        found = books.find_books()
+        if not found:
             return render_template("error.html", username="username", hint="No books found.")
-        return books
+        return found
     return False
 
 
@@ -199,19 +211,24 @@ def showbooks():
         user_id = users.get_user_id(username)
         if not user_id:
             return render_template("error.html", username="username", hint="User not found.")
-        fav = request.form.get('fav')
+        # fav = request.form.get('fav')
         book_id = request.form.get('book_id')
         existing_favourite = books.check_existing_favourite(user_id, book_id)
-        if fav == "yes":
-            if existing_favourite:
-                return render_template("error.html", username="username", hint="Book already in favourites")
-            books.add_book_to_favourites(user_id, book_id)
-            return render_template("error.html", username="username", hint="Book added to favourites successfully")
-        if fav == "no" and existing_favourite:
-            books.delete_book_from_favourites(user_id, book_id)
-            return render_template("error.html", username="username", hint="Book removed from favourites")
+        # if fav == "yes":
+        #     if existing_favourite:
+        #         return render_template("error.html", username="username", hint="Book already in favourites")
+        #     books.add_book_to_favourites(user_id, book_id)
+        #     return render_template("error.html", username="username", hint="Book added to favourites successfully")
+        # if fav == "no" and existing_favourite:
+        #     books.delete_book_from_favourites(user_id, book_id)
+        #     return render_template("error.html", username="username", hint="Book removed from favourites")
+        # if not existing_favourite:
+        #     return render_template("error.html", username="username", hint="Book is not in favourites")
         if not existing_favourite:
-            return render_template("error.html", username="username", hint="Book is not in favourites")
+            books.add_book_to_favourites(user_id, book_id)
+            return render_template("error.html", username="username", hint="Book added to favourites")
+        if existing_favourite:
+            return render_template("error.html", username="username", hint="Book already in favourites")
 
     query = request.args.get("query", "")
     found_books = books.search_books(query)
@@ -275,13 +292,13 @@ def userprofile(username):
             return render_template("error.html", username="username", hint="Invalid CSRF token.")
         connect = request.form.get('connect')
         viewed_user = request.form.get('viewed_user')
-        any = users.check_friends(current_user, viewed_user)
-        if any == 0 and connect == "yes":
+        found = users.check_friends(current_user, viewed_user)
+        if found == 0 and connect == "yes":
             users.add_connection(current_user, viewed_user)
             return render_template("error.html", username="username", hint="You have connected")
 
-        any = users.check_friends(current_user, viewed_user)
-        if any > 0 and connect == "no":
+        found = users.check_friends(current_user, viewed_user)
+        if found > 0 and connect == "no":
             users.delete_connection()
             return render_template("error.html", username="username", hint="You have removed connection")
     return render_template("userprofile.html", user=user)

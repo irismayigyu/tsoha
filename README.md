@@ -8,7 +8,7 @@ MyBooks on sovellus, johon käyttäjä voi lisätä ja arvostella lukemiaan kirj
 - Tulevaisuudessa sovellusta voisi laajentaa niin että profiili voisi olla julkinen ja käyttäjät voisivat nähdä toistensa julkisia arvosteluja. 
 - Kirjalla olisi oma sivusto, jossa näkyy kaikki siitä kirjoitetut arvostelut.
 - Voisi myös kirjata ylös kirjan genren tai muita tietoja.
-- Näistä tiedoista voisi tehdä kiinnostavia tilastoja esim. lukijan keskiarvo-arvosana fantasiakirjoille tai montako prosenttia lukijan lukemista kirjoist ovat olleet trillereitä.
+- Näistä tiedoista voisi tehdä kiinnostavia tilastoja esim. lukijan keskiarvo-arvosana fantasiakirjoille tai montako prosenttia lukijan lukemista kirjoista ovat olleet trillereitä.
 
 # Nykyinen toiminnallisuus
 
@@ -67,4 +67,4 @@ flask run
 ```
 
 
-HUOM Sovelluksessa on käytetty chatgpteetä. 
+HUOM Sovelluksessa on käytetty chatgpteetä. Sovelluksen kuva on otettu tältä sivulta: https://commons.wikimedia.org/wiki/File:Draw_book.png ja sillä on CC lisenssi. 

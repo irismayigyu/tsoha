@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,11 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-    <title>Your Page Title</title>
+    <title>MyBooks</title>
 
     {% extends "layout.html" %}
 
-        {% block nonavbar %}
+    {% block nonavbar %}
 </head>
 
 <body>
@@ -44,11 +43,22 @@
                 {% if fav_books %}
                 <hr>
                 <p>Your favorite books:</p>
-                <ul>
-                    {% for book in fav_books %}
-                    <li>{{ book.bookname }} by {{ book.author }} ({{ book.year }})</li>
-                    {% endfor %}
-                </ul>
+                <div class="row">
+                    <div class="col">
+                        <ul>
+                            {% for book in fav_books %}
+                            <li>
+                                <form method="POST" action="{{ url_for('startpage') }}">
+                                    <input type="hidden" name="csrf_token" value="{{ session['csrf_token'] }}">
+                                    <input type="hidden" name="book_id" value="{{ book.id }}">
+                                    {{ book.bookname }} by {{ book.author }} ({{ book.year }})
+                                    <button type="submit">Remove from favourites</button>
+                                </form>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
                 {% else %}
                 <p>You don't have favorite books listed.</p>
                 {% endif %}

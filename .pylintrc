@@ -19,12 +19,15 @@ disable=raw-checker-failed,
         unused-import,
         cyclic-import,
         wrong-import-order,
-        wrong-import-position
+        wrong-import-position,
+        broad-except,
+        no-value-for-parameter
 
 [FORMAT]
 
 [REFACTORING]
 
 [DESIGN]
-max-line-length=120
+max-line-length=130
 max-returns=8
+max-args=7

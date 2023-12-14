@@ -69,6 +69,7 @@ def get_user_id(username):
 
     return user.id if user else None
 
+
 def select_user(username):
     user = db.session.execute(
         text("SELECT * FROM users WHERE username = :username"), {"username": username}).fetchone()
@@ -81,6 +82,7 @@ def showusers(query):
     found_users = result.fetchall()
     return found_users
 
+
 def foundfriends(user):
     sql_friends = text("""SELECT DISTINCT f1.user2
                    FROM friends f1, friends f2
@@ -91,7 +93,8 @@ def foundfriends(user):
     result_friends = db.session.execute(sql_friends, {"user": user})
     found_friends = result_friends.fetchall()
     return found_friends
-    
+
+
 def foundreviews(friend_id):
     sql_reviews = text("""SELECT r.id, r.name, r.status, r.grade, r.review, r.review_date
                         FROM reviews r
@@ -99,6 +102,7 @@ def foundreviews(friend_id):
     result_reviews = db.session.execute(sql_reviews, {"friend_id": friend_id})
     reviews = result_reviews.fetchall()
     return reviews
+
 
 def check_friends(current_user, viewed_user):
     sql = text(
@@ -109,14 +113,14 @@ def check_friends(current_user, viewed_user):
     return any
 
 
-
 def add_connection(current_user, viewed_user):
     query = text(
         "INSERT INTO friends (user1, user2) VALUES (:current_user, :viewed_user)")
     db.session.execute(
         query, {"current_user": current_user, "viewed_user": viewed_user})
     db.session.commit()
-    
+
+
 def delete_connection(current_user, viewed_user):
     query = text(
         "DELETE FROM friends WHERE user1=:current_user AND user2=:viewed_user")
@@ -124,7 +128,8 @@ def delete_connection(current_user, viewed_user):
         query, {"current_user": current_user, "viewed_user": viewed_user})
     db.session.commit()
 
-def user_reviews(user):
+
+def select_user_reviews(user):
     query_reviews = text("SELECT * FROM reviews WHERE user_id = :user_id")
     result_reviews = db.session.execute(query_reviews, {"user_id": user.id})
     user_reviews = result_reviews.fetchall()
