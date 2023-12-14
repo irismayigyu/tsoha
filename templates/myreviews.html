@@ -33,9 +33,6 @@
             <form method="POST" action="{{ url_for('myreviews') }}">
                 <input type="hidden" name="csrf_token" value="{{ session['csrf_token'] }}">
                 <input type="hidden" name="review_id" value="{{ re.id }}">
-                Favourite? <br>
-                <!-- <input type="radio" name="delete" value="yes"> Delete review
-                <button type="submit">Submit</button> -->
                 <button type="submit">Delete review</button>
             </form>
             <hr>

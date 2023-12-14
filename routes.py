@@ -211,19 +211,8 @@ def showbooks():
         user_id = users.get_user_id(username)
         if not user_id:
             return render_template("error.html", username="username", hint="User not found.")
-        # fav = request.form.get('fav')
         book_id = request.form.get('book_id')
         existing_favourite = books.check_existing_favourite(user_id, book_id)
-        # if fav == "yes":
-        #     if existing_favourite:
-        #         return render_template("error.html", username="username", hint="Book already in favourites")
-        #     books.add_book_to_favourites(user_id, book_id)
-        #     return render_template("error.html", username="username", hint="Book added to favourites successfully")
-        # if fav == "no" and existing_favourite:
-        #     books.delete_book_from_favourites(user_id, book_id)
-        #     return render_template("error.html", username="username", hint="Book removed from favourites")
-        # if not existing_favourite:
-        #     return render_template("error.html", username="username", hint="Book is not in favourites")
         if not existing_favourite:
             books.add_book_to_favourites(user_id, book_id)
             return render_template("error.html", username="username", hint="Book added to favourites")
@@ -251,8 +240,9 @@ def showusers():
     return render_template("showusers.html", found_users=found_users)
 
 
-@app.route("/showfriends")
+@app.route("/showfriends", methods=['GET', 'POST'])
 def showfriends():
+
     if "username" not in session:
         return render_template("error.html", username="username", hint="User not logged in.")
 
@@ -271,10 +261,17 @@ def showfriends():
             reviews = users.foundreviews(friend_id)
             friend_reviews.append(
                 {"friend_username": friend[0], "reviews": reviews})
+    if request.method == 'POST':
+        # if session["csrf_token"] != request.form["csrf_token"]:
+        #     return render_template("error.html", username="username", hint="Invalid CSRF token.")
+        viewed_user = request.form.get('viewed_user')
+        found = users.check_friends(username, viewed_user)
+        if found > 0:
+            users.delete_connection(username, viewed_user)
+            return render_template("error.html", username="username", hint="You have removed connection")
 
     if not found_friends:
         return render_template("error.html", hint="No friends yet.")
-
     return render_template("showfriends.html", found_friends=friend_reviews, session_user=user)
 
 
@@ -290,19 +287,14 @@ def userprofile(username):
     if request.method == 'POST':
         if session["csrf_token"] != request.form["csrf_token"]:
             return render_template("error.html", username="username", hint="Invalid CSRF token.")
-        connect = request.form.get('connect')
         viewed_user = request.form.get('viewed_user')
         found = users.check_friends(current_user, viewed_user)
-        if found == 0 and connect == "yes":
+        if not found:
             users.add_connection(current_user, viewed_user)
             return render_template("error.html", username="username", hint="You have connected")
-
-        found = users.check_friends(current_user, viewed_user)
-        if found > 0 and connect == "no":
-            users.delete_connection()
-            return render_template("error.html", username="username", hint="You have removed connection")
+        if found:
+            return render_template("error.html", username="username", hint="You have already connected")
     return render_template("userprofile.html", user=user)
-
 
 @app.route("/addbook")
 def addbook():

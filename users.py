@@ -109,8 +109,8 @@ def check_friends(current_user, viewed_user):
         "SELECT * FROM friends WHERE user1=:current_user AND user2=:viewed_user")
     result = db.session.execute(
         sql, {"current_user": current_user, "viewed_user": viewed_user})
-    any = len(result.fetchall())
-    return any
+    results = len(result.fetchall())
+    return results
 
 
 def add_connection(current_user, viewed_user):

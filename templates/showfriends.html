@@ -21,7 +21,15 @@
     <ul>
         {% for friend_info in found_friends %}
             <li>
-                <p>Friend: <a href="{{ url_for('userprofile', username=friend_info.friend_username) }}">{{ friend_info.friend_username }}</a></p>
+                <form method="POST" action="{{ url_for('showfriends') }}">
+                    <input type="hidden" name="csrf_token" value="{{ session['csrf_token'] }}">
+                    <input type="hidden" name="viewed_user" value="{{ friend_info.friend_username }}">
+                    <p>Friend: <a href="{{ url_for('userprofile', username=friend_info.friend_username) }}">{{ friend_info.friend_username }}</a></p>
+    
+                    <button type="submit">Remove connection </button>
+                </form>
+                <br>
+        
                 {% if friend_info.reviews %}
                     <ul>
                         {% for review in friend_info.reviews %}

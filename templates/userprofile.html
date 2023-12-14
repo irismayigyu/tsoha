@@ -16,11 +16,9 @@
     <form method="post" >
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
         <input type="hidden" name="viewed_user" value="{{ user.username }}">
-        Connect?: <br>
-        <input type="radio" name="connect" value="yes"> Yes
-        <input type="radio" name="connect" value="no"> Remove connection
+        <input type="submit" value="Connect with user">
         <br>
         <br>
-        <button type="submit">Confirm</button>
+
     </form>
 {% endblock %}
