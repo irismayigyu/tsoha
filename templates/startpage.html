@@ -1,49 +1,69 @@
 
 <!DOCTYPE html>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<html lang="en">
 
-{% extends "layout.html" %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <title>Your Page Title</title>
 
-{% block nonavbar %}
-    Welcome to MyBooks, {{ session.username }}!
-    <br>
-    <p>
-        Here you can list and review all the books you have read.
-        You can view your reviews or make new ones: search for the book you want to review from the database.<br>
-        You can also view, search and connect with other users. When they have also connected with you, you become friends and can view their reviews.<br>
-        <br>
-        You can return to the main page by clicking the 'MyBooks' icon in the left corner!
+    {% extends "layout.html" %}
+
+        {% block nonavbar %}
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6">
+                <h1>Welcome to MyBooks, {{ session.username }}!</h1>
+                <p>
+                    Here you can list and review all the books you have read. You can view your reviews or make new
+                    ones: search for the book you want to review from the database.<br> You can also view, search and
+                    connect with other users. When they have also connected with you, you become friends and can view
+                    their reviews.<br> <br> You can return to the main page by clicking the 'MyBooks' icon in the left
+                    corner!
+                </p>
+                <p>
+                    <a href="/myreviews">
+                        <button class="button">My Reviews</button>
+                    </a>
+                </p>
+                <p>
+                    <a href="/search">
+                        <button class="button">Search for a book/users</button>
+                    </a>
+                </p>
+                <p>
+                    <a href="/showfriends">
+                        <button class="button">My friends</button>
+                    </a>
+                </p>
+                <hr>
+                {% if fav_books %}
+                <hr>
+                <p>Your favorite books:</p>
+                <ul>
+                    {% for book in fav_books %}
+                    <li>{{ book.bookname }} by {{ book.author }} ({{ book.year }})</li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p>You don't have favorite books listed.</p>
+                {% endif %}
+                <hr>
+            </div>
+            <div class="col-md-6" style="margin-top: 130px;">
+                <img src="{{ url_for('static', filename='book.png') }}" class="img-fluid" alt="Picture">
+            </div>
         </div>
-    <p>
+    </div>
     <br>
-    <a href="/myreviews">
-        <button>My Reviews</button>
-    </a>
-    <p>
+    <br>
+    <br>
+    <br>
+</body>
 
-    <p>
-        <a href="/search">
-            <button>Search for a book/users</button>
-        </a>
-        <p>
-            <a href="/showfriends">
-                <button>My friends</button>
-            </a>
-
-        <hr>
-        {% if fav_books %}
-        <hr>
-        Your favorite books:
-        <ul>
-            {% for book in fav_books %}
-                <li>{{ book.bookname }} by {{ book.author }} ({{ book.year }})</li>
-            {% endfor %}
-        </ul>
-        {% else %}
-            <p>You don't have favorite books listed.</p>
-        {% endif %}
-        <hr>
-
-
+</html>
 {% endblock %}

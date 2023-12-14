@@ -37,7 +37,7 @@ def find_books():
     username = session['username']
     user_id = users.get_user_id(username)
     query_book = text(
-        "SELECT * FROM books WHERE WHERE content ILIKE :query")
+        "SELECT * FROM books WHERE content ILIKE :query")
     result_book = db.session.execute(query_book, {"user_id": user_id})
     books = result_book.fetchall()
     return books
