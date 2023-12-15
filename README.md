@@ -3,7 +3,7 @@
 
 MyBooks on sovellus, johon käyttäjä voi lisätä ja arvostella lukemiaan kirjoja. Sovellus on alustavasti omaan käyttöön ja toimii ns digitaalisena "kirjapäiväkirjana". Tulevaisuudessa sovellusta voisi laajentaa niin että profiili voisi olla julkinen ja käyttäjät voisivat nähdä toistensa arvosteluja. Tällä hetkellä kaverukset voivat nähdä toistensa arvostelut.
 
-# Toiminnallisuusideoita
+# Laajennussideoita
 
 - Tulevaisuudessa sovellusta voisi laajentaa niin että profiili voisi olla julkinen ja käyttäjät voisivat nähdä toistensa julkisia arvosteluja. 
 - Kirjalla olisi oma sivusto, jossa näkyy kaikki siitä kirjoitetut arvostelut.
@@ -27,6 +27,7 @@ MyBooks on sovellus, johon käyttäjä voi lisätä ja arvostella lukemiaan kirj
 - Etusivulla on kuva.
 - Käyttäjä voi nähdä arvosteluidensa keskiarvo-arvosanan sekä lukumäärän.
 - Käyttäjä voi poistaa arvosteluitaan.
+- Käyttäjä voi nähdä hakujensa osumien lukumäärän.
 
 # Käynnistysohjeet
 

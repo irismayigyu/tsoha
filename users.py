@@ -82,6 +82,10 @@ def showusers(query):
     found_users = result.fetchall()
     return found_users
 
+def showusers_count(query):
+    sql = text("SELECT COUNT(username) FROM users WHERE username LIKE :query")
+    result = db.session.execute(sql, {"query": "%"+query+"%"}).scalar()
+    return result
 
 def foundfriends(user):
     sql_friends = text("""SELECT DISTINCT f1.user2

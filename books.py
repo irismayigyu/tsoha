@@ -33,16 +33,6 @@ def found_books(bookname):
     return found
 
 
-def find_books():
-    username = session['username']
-    user_id = users.get_user_id(username)
-    query_book = text(
-        "SELECT * FROM books WHERE content ILIKE :query")
-    result_book = db.session.execute(query_book, {"user_id": user_id})
-    books = result_book.fetchall()
-    return books
-
-
 def query_books(name):
     query_book = text("SELECT * FROM books WHERE bookname = :name")
     result_book = db.session.execute(query_book, {"name": name})
@@ -83,6 +73,13 @@ def search_books(query):
     result = db.session.execute(sql, {"query": "%" + query + "%"})
     found = result.fetchall()
     return found
+
+
+def search_books_count(query):
+    sql = text(
+        "SELECT COUNT(bookname) FROM books WHERE bookname LIKE :query OR author LIKE :query")
+    result = db.session.execute(sql, {"query": "%" + query + "%"}).scalar()
+    return result
 
 
 def get_rev_avg(user_id):

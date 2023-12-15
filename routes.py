@@ -187,19 +187,6 @@ def get_user_reviews():
     return user_reviews
 
 
-def find_books():
-    if "username" not in session:
-        return render_template("error.html", username="username", hint="User not logged in.")
-    username = session['username']
-    user = check_user_exists(username)
-    if user:
-        found = books.find_books()
-        if not found:
-            return render_template("error.html", username="username", hint="No books found.")
-        return found
-    return False
-
-
 @app.route("/showbooks", methods=['GET', 'POST'])
 def showbooks():
     username = session.get('username')
@@ -221,11 +208,12 @@ def showbooks():
 
     query = request.args.get("query", "")
     found_books = books.search_books(query)
+    count=books.search_books_count(query)
 
     if not found_books:
         return render_template("error.html", username="username", hint="Book not found. Add it or search again.")
 
-    return render_template("showbooks.html", found_books=found_books)
+    return render_template("showbooks.html", found_books=found_books, count=count)
 
 
 @app.route("/showusers")
@@ -234,10 +222,11 @@ def showusers():
         return render_template("error.html", username="username", hint="User not logged in.")
     query = request.args["query"]
     found_users = users.showusers(query)
+    count=users.showusers_count(query)
     if not found_users:
         return render_template("error.html", username="username", hint="No users found")
 
-    return render_template("showusers.html", found_users=found_users)
+    return render_template("showusers.html", found_users=found_users, count=count)
 
 
 @app.route("/showfriends", methods=['GET', 'POST'])
@@ -295,6 +284,7 @@ def userprofile(username):
         if found:
             return render_template("error.html", username="username", hint="You have already connected")
     return render_template("userprofile.html", user=user)
+
 
 @app.route("/addbook")
 def addbook():

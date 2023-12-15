@@ -57,7 +57,6 @@ INSERT INTO books (bookname, author, year) VALUES
     ('Pride and Prejudice', 'Jane Austen', 1813),
     ('The Hobbit', 'J.R.R. Tolkien', 1937),
     ('Harry Potter and the Sorcerer''s Stone', 'J.K. Rowling', 1997),
-    ('To Kill a Mockingbird', 'Harper Lee', 1960),
     ('Animal Farm', 'George Orwell', 1945),
     ('The Chronicles of Narnia', 'C.S. Lewis', 1950),
     ('The Da Vinci Code', 'Dan Brown', 2003),
