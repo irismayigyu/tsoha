@@ -65,6 +65,6 @@ Käynnistä sovellus:
 ```
 flask run
 ```
-
+HUOM jos lomakkeissa tai muissa lähetettävistä napeista tulee Internal service error niin kirjaudu ulos ja takaisin sisään niin sovelluksen pitäisi toimi toivotusti. 
 
 HUOM Sovelluksessa on käytetty chatgpteetä. Sovelluksen kuva on otettu tältä sivulta: https://commons.wikimedia.org/wiki/File:Draw_book.png ja sillä on CC lisenssi. 
