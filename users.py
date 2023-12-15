@@ -30,13 +30,13 @@ def logout():
 def validate(username, password):
     if not username or not password:
         return (False, "Username and password required.")
-    if not re.match("^[a-z]+$", username):
-        return (False, "Please use only letters a-z for username.")
-    if len(username) < 2:
+    if not re.match("^[A-Za-z]+$", username):
+        return (False, "Please use only letters A-z for username.")
+    if len(username) < 3:
         return (False, "Username too short.")
-    if len(password) < 6:
+    if len(password) < 5:
         return (False, "Password too short.")
-    if re.match("^[a-z]+$", password):
+    if re.match("^[A-Za-z]+$", password):
         return (False, "Password should contain other characters than letters.")
     existing_user = db.session.execute(
         text("SELECT * FROM users WHERE username = :username"), {"username": username}).fetchone()

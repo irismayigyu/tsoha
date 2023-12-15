@@ -8,15 +8,17 @@
 <link rel="stylesheet" href="../static/style.css">
 <h1><a href="/startpage">MyBooks</a></h1>
 
-Register
-<p>
+<p>Register</p>
 <form action="/register" method="POST">
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-    <p>Username (Maximum of 20 characters):<br>
-        <input type="text" name="username" maxlength="20" required>
+    <p>Username:<br>
+        <input type="text" name="username" pattern="[A-Za-z]{3,}" title="Only letters allowed, min length 3, max length 20"
+               maxlength="20" required>
     </p>
-    <p>Password (Maximum of 20 characters):<br>
-        <input type="password" name="password" maxlength="20" required>
+    <p>Password:<br>
+        <input type="password" name="password" pattern="(?=.*[A-Za-z])(?=.*\d).{5,}"
+               title="Must contain letters and numbers, min length 5" required>
+        <br>
     </p>
     <input type="submit" value="Register">
 </form>
