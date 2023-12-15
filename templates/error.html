@@ -8,14 +8,15 @@
 <link rel="stylesheet" href="../static/style.css">
 <h1><a href="/startpage">MyBooks</a></h1>
 
-    <div class="flex_container">
-        {% if hint %}
-            <p>{{ hint }}</p>
-        {% endif %}
-        {% if session.username  %}
-            <a href="/startpage" class="button">Back to mainpage</a>
-        {% else %}
-            <a href="/logout" class="button">Return</a>
-        {% endif %}
-    </div>
-
+<div class="flex_container">
+    {% if hint %}
+        <p>{{ hint }}</p>
+    {% endif %}
+    {% if hint == "User not found." %}
+        <a href="/logout" class="button">Return</a>
+    {% elif session.username %}
+        <a href="/startpage" class="button">Back to startpage</a>
+    {% else %}
+        <a href="/logout" class="button">Return</a>
+    {% endif %}
+</div>

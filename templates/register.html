@@ -10,7 +10,6 @@
 
 <p>Register</p>
 <form action="/register" method="POST">
-    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
     <p>Username:<br>
         <input type="text" name="username" pattern="[A-Za-z]{3,}" title="Only letters allowed, min length 3, max length 20"
                maxlength="20" required>

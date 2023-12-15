@@ -38,7 +38,7 @@ def login():
 @app.route("/logout")
 def logout():
     users.logout()
-    return redirect("/register")
+    return redirect("/")
 
 
 @app.route("/register", methods=["POST", "GET"])
